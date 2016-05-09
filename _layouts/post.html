@@ -1,0 +1,75 @@
+---
+layout: default
+---
+
+{% include header.html %}
+
+{% assign author = site.authors[page.author] %}
+
+<div class="page-wrapper">
+    <div class="page-details-info">
+        By <span class="page-details-info-author">{{ author.name }}</span>
+        Posted <span class="page-details-info-date">{{ page.date | date_to_long_string }}</span>
+    </div>
+
+    <div class="page-share-buttons">
+        <div class="addthis_sharing_toolbox"></div>
+    </div>
+
+    <div class="page-content">
+        <p class="page-image-wrapper">
+            <img class="page-featured-image" src="{{ page.featured-image }}" alt="{{ page.title }}">
+        </p>
+        {{ content }}
+    </div>
+
+    <div class="page-subscribe">
+        <p class="page-subscribe-text">Don't forget to <a href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">subscribe to our feed</a> to get updates from Ve Tech on your RSS reader.</p>
+    </div>
+
+    <div class="page-author-details">
+        <img class="page-author-details-avatar" src="{{ author.avatar }}" alt="{{ author.name }}">
+        <div class="page-author-details-name">{{ author.name }}</div>
+        <div class="page-author-details-position">{{ author.position }}</div>
+        <div class="page-author-details-email"><a href="mailto:{{ author.email }}">{{ author.email }}</a></div>
+        <div class="page-author-details-social">
+            {% if author.social.website %}
+                <a title="Webpage of {{ author.name }}" href="{{ author.social.website }}"><i class="fa fa-link"></i></a>
+            {% endif %}
+            {% if author.social.github %}
+                <a title="Github Profile of {{ author.name }}" href="{{ author.social.github }}"><i class="fa fa-github"></i></a>
+            {% endif %}
+            {% if author.social.twitter %}
+                <a title="Twitter Profile of {{ author.name }}" href="{{ author.social.twitter }}"><i class="fa fa-twitter"></i></a>
+            {% endif %}
+            {% if author.social.linkedin %}
+                <a title="LinkedIn Profile of {{ author.name }}" href="{{ author.social.linkedin }}"><i class="fa fa-linkedin"></i></a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="page-comments">
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+    </div>
+
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-56094e7c04fd0e9b" async="async"></script>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'vetechblog';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+</div>
+
+<div class="navigation">
+    <a href="/" class="navigation-button">Back</a>
+    <a href="#" class="navigation-button" data-proofer-ignore>Top</a>
+</div>
+
+{% include footer.html %}

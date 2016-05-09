@@ -1,0 +1,31 @@
+# Site settings
+title: Tech Blog - Ve Interactive
+description: Building awesome things in .net
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://tristan-rhodes.co.uk"
+paginate: 5
+paginate_path: "/page:num/"
+
+authors:
+  tristan-rhodes:
+    name: Tristan Rhodes
+    position: Software Engineer
+    email: tristan.rhodes@veinteractive.com
+    avatar: /img/authors/tristan-rhodes.png
+
+# Build settings
+highlighter: rouge
+markdown: kramdown
+permalink: pretty
+permalink: /:title.html
+exclude: [
+    'README.md',
+    'Gemfile',
+    'Gemfile.lock',
+    'deploy.ps1',
+    'vendor',
+    'Rakefile'
+]
+gems:
+  - jekyll-sitemap
+  - jekyll-paginate
