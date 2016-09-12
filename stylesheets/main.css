@@ -5,7 +5,7 @@ html {
 *,
 *:before,
 *:after {
-    box-sizing: inherit;
+    /*box-sizing: inherit;*/
 }
 
 * {
@@ -314,9 +314,9 @@ h3 {
 
 .button {
     cursor: pointer;
-    border: 1px solid #eee;
-    display: inline-block;
-    padding: 5px 10px;
+    /*border: 1px solid #eee;*/
+    /*display: inline-block;*/
+/*    padding: 5px 10px;*/
 }
 
 .button.disabled {
