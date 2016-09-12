@@ -458,7 +458,7 @@ header {
 header h1 {
   width: 540px;
   margin-top: 0;
-  margin-bottom: 0.2em;
+  /*margin-bottom: 0.2em;*/
   font-size: 72px;
   font-weight: normal;
   line-height: 1;
@@ -481,6 +481,7 @@ header h2 {
   position: relative;
   width: 940px;
   margin: 0 auto;
+  height: 200px;
 }
 
 #content-wrapper {
@@ -530,15 +531,18 @@ a.button small {
   display: block;
   font-size: 11px;
 }
-header a.button {
+/*header a.button {
   position: absolute;
+  width: 202px;
+  height: 78px;
   top: 0;
   right: 0;
   background: transparent url(../images/github-button.png) 0 0 no-repeat;
-}
+}*/
 aside a.button {
   display: block;
-  width: 138px;
+  width: 202px;
+  height: 78px;
   padding-left: 64px;
   margin-bottom: 20px;
   font-size: 21px;
@@ -871,6 +875,36 @@ footer a:hover {
     margin-left: 0;
     content: none;
   }
+}
+
+.header-links {
+  color: #FFF;
+  top: 0;
+  right: 0;
+  width: 300px;
+  float: right;
+}
+
+.header-links > button {
+/*  width: 202px;
+  height: 78px;
+  padding-left: 64px;
+  margin-bottom: 20px;*/
+  font-size: 21px;
+  background: transparent url(../images/download-button.png) 0 0 no-repeat;
+  border: none;
+}
+
+.header-links > span {
+  display: block;
+}
+
+.title {
+  float: left;
+}
+
+.title > h1 {
+  padding-bottom: 1em;
 }
 
 /* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
