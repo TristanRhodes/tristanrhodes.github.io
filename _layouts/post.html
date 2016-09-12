@@ -24,28 +24,12 @@ layout: default
     </div>
 
     <div class="page-subscribe">
-        <p class="page-subscribe-text">Don't forget to <a href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">subscribe to our feed</a> to get updates from Ve Tech on your RSS reader.</p>
+        <p class="page-subscribe-text"><a href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">Subscribe to my feed</a></p>
     </div>
 
     <div class="page-author-details">
         <img class="page-author-details-avatar" src="{{ author.avatar }}" alt="{{ author.name }}">
         <div class="page-author-details-name">{{ author.name }}</div>
-        <div class="page-author-details-position">{{ author.position }}</div>
-        <div class="page-author-details-email"><a href="mailto:{{ author.email }}">{{ author.email }}</a></div>
-        <div class="page-author-details-social">
-            {% if author.social.website %}
-                <a title="Webpage of {{ author.name }}" href="{{ author.social.website }}"><i class="fa fa-link"></i></a>
-            {% endif %}
-            {% if author.social.github %}
-                <a title="Github Profile of {{ author.name }}" href="{{ author.social.github }}"><i class="fa fa-github"></i></a>
-            {% endif %}
-            {% if author.social.twitter %}
-                <a title="Twitter Profile of {{ author.name }}" href="{{ author.social.twitter }}"><i class="fa fa-twitter"></i></a>
-            {% endif %}
-            {% if author.social.linkedin %}
-                <a title="LinkedIn Profile of {{ author.name }}" href="{{ author.social.linkedin }}"><i class="fa fa-linkedin"></i></a>
-            {% endif %}
-        </div>
     </div>
 </div>
 

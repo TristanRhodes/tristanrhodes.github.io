@@ -9,9 +9,7 @@ paginate_path: "/page:num/"
 authors:
   tristan-rhodes:
     name: Tristan Rhodes
-    position: Software Engineer
-    email: tristan.rhodes@veinteractive.com
-    avatar: /img/authors/tristan-rhodes.png
+    avatar: /images/avatars/tristan-rhodes.jpg
 
 # Build settings
 highlighter: rouge
