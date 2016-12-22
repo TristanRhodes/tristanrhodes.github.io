@@ -217,7 +217,7 @@ h3 {
 @media (min-width: 768px) {
     .post-details-wrapper {
         display: inline-block;
-        width: calc(100% - 300px);
+        width: calc(100% - 360px);
     }
 }
 
