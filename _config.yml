@@ -1,8 +1,8 @@
 # Site settings
-title: Tech Blog - Ve Interactive
+title: Tristan's Blog
 description: Building awesome things in .net
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://tristan-rhodes.co.uk"
+url: "https://www.tristan-rhodes.co.uk"
 paginate: 5
 paginate_path: "/page:num/"
 
