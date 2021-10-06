@@ -377,6 +377,8 @@ Pagination
     color: #fff;
 }
 
+
+
 /*******************************************************************************
 Full-Width Styles
 *******************************************************************************/
@@ -487,6 +489,38 @@ Full-Width Styles
 
 #footer_wrap {
   background: #212121;
+}
+
+
+
+/*******************************************************************************
+Nav Bar
+*******************************************************************************/
+.nav-bar-wrapper {
+    width: 100%;
+    padding: 8px 0px;
+}
+
+.nav-bar {
+    list-style-type: none;
+    display: flex;
+    margin-bottom: 0px;
+    max-width: 640px;
+    padding: 0px;
+}
+
+.nav-bar-item {
+    margin: 5px;
+    padding-right: 3px;
+    a {
+        font-size: 18px;
+        color: #FFFFFF;
+
+        &:hover {
+            text-decoration: none;
+            color: #0090ff;
+        }
+    }
 }
 
 
