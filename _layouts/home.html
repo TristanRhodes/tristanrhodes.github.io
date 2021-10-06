@@ -1,5 +1,12 @@
-{% include header.html %}
+---
+layout: default
+---
 
-{{ content }}
+<div class="home">
+    {%- if page.title -%}
+    <h1 class="page-heading">{{ page.title }}</h1>
+    {%- endif -%}
 
-{% include footer.html %}
+    {{ content }}
+
+</div>

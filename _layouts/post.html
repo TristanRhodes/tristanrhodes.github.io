@@ -1,29 +1,34 @@
-{% include header.html %}
-
+---
+layout: default
+---
 {% assign author = site.authors[page.author] %}
 
-<div class="page-wrapper">
-    <div class="page-details-info">
-        By <span class="page-details-info-author">{{ author.name }}</span>
-        Posted <span class="page-details-info-date">{{ page.date | date_to_long_string }}</span>
-    </div>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <p class="page-image-wrapper">
+        <img class="page-featured-image" src="{{ page.featured-image }}" alt="{{ page.title }}">
+    </p>
 
-    <div class="page-share-buttons">
-        <div class="addthis_sharing_toolbox"></div>
-    </div>
+    <header class="post-header">
+        <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+        <div class="page-details-info">
+            <p>By <span class="page-details-info-author">{{ author.name }}</span></p>
+            <p>Posted <span class="page-details-info-date">{{ page.date | date_to_long_string }}</span></p>
+        </div>
+    </header>
 
-    <div class="page-content">
-        <p class="page-image-wrapper">
-            <img class="page-featured-image" src="{{ page.featured-image }}" alt="{{ page.title }}">
-        </p>
-        <H1>{{ page.title }}</H1>
+    <div class="post-content e-content" itemprop="articleBody">
         {{ content }}
     </div>
+
+    {%- if site.disqus.shortname -%}
+    {%- include disqus_comments.html -%}
+    {%- endif -%}
+
+    <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 
     <div class="page-author-details">
         <img class="page-author-details-avatar" src="{{ author.avatar }}" alt="{{ author.name }}">
         <div class="page-author-details-name">{{ author.name }}</div>
     </div>
-</div>
-
-{% include footer.html %}
+</article>

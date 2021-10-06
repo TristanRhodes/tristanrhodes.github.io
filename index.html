@@ -1,51 +1,47 @@
 ---
 layout: home
-title: Tristan's Blog
 ---
+<h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
+<ul class="post-list">
+    {%- for post in paginator.posts -%}
+    {% assign author = site.authors[post.author] %}
+    <li>
+        <h3>
+            <a class="post-link" href="{{ post.url | relative_url }}">
+                {{ post.title | escape }}
+            </a>
+        </h3>
+        <p class="page-image-wrapper">
+            <img class="home-featured-image" src="{{ post.featured-image }}" alt="{{ post.title }}">
+        </p>
+        {%- if site.show_excerpts -%}
+        {{ post.excerpt }}
+        {%- endif -%}
+        <div class="home-details-info">
+            <p class="home-p-margin">By <span class="home-details-info-author">{{ author.name }}</span></p>
+            <p class="home-p-margin">Posted <span class="home-details-info-date">{{ post.date | date_to_long_string }}</span></p>
+        </div>
+    </li>
+    {%- endfor -%}
+</ul>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-        </section>    
-      </div>
-    </div>
+<!-- Pagination links -->
+<div class="pagination">
 
+    {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path }}" class="navigation-button">Previous</a>
+    {% else %}
+    <span class="disabled button previous">Previous</span>
+    {% endif %}
 
-    <!-- DISPLAY SOME POSTS!!! -->
-    <div class="page-wrapper">
-      {% for post in paginator.posts %}
-          {% assign author = site.authors[post.author] %}
-          <div class="post">
-              <div class="post-image-wrapper">
-                  <a class="post-image-link" href="{{ post.url }}" style="background-image: url({{ post.featured-image }})">
-                  </a>
-              </div><div class="post-details-wrapper">
-                  <div class="post-details-info">
-                      <div>By <span class="post-details-info-author">{{ author.name }}</span></div>
-                      <div>Posted <span class="post-details-info-date">{{ post.date | date_to_long_string }}</span></div>
-                  </div>
-                  <h2 class="post-details-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
-                  <div class="post--details-excerpt">{{ post.excerpt }}</div>
-              </div>
-          </div>
-      {% endfor %}
+    <span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
 
-      <!-- Pagination links -->
-      <div class="pagination">
+    {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path }}" class="navigation-button">Next</a>
+    {% else %}
+    <span class="disabled button next">Next</span>
+    {% endif %}
 
-          {% if paginator.previous_page %}
-              <a href="{{ paginator.previous_page_path }}" class="navigation-button">Previous</a>
-          {% else %}
-              <span class="disabled button previous">Previous</span>
-          {% endif %}
+</div>
 
-          <span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
-
-          {% if paginator.next_page %}
-              <a href="{{ paginator.next_page_path }}" class="navigation-button">Next</a>
-          {% else %}
-              <span class="disabled button next">Next</span>
-          {% endif %}
-          
-      </div>
-    </div>
+<p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
