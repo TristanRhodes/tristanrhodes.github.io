@@ -266,6 +266,21 @@ kbd {
 }
 
 /*******************************************************************************
+Blog post content Styles
+*******************************************************************************/
+
+//    <div class="post-content e-content" itemprop="articleBody">
+.post-content {
+    img {
+        margin: 0 auto;
+        display: block;
+        max-width: 80%;
+        border-radius: 5px;
+        box-shadow: 5px 5px grey;
+    }
+}
+
+/*******************************************************************************
 Blog post footer styles
 *******************************************************************************/
 .page-author-details {
