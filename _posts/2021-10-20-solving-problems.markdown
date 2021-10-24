@@ -32,7 +32,7 @@ Beyond this, there are more complex problems such as game state scenarios; Chess
 
 Photo by [Vlada Karpovich](https://www.pexels.com/@vlada-karpovich?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels) from [Pexels](https://www.pexels.com/photo/a-boy-playing-chess-6115011/?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels)
 
-These problems are solvable because we understand them, which means we have a mental model that we can describe to others and collaborate on the implementation of the solution. The state of the game is finite, the transforms are known, and can be described and codified. Once codified the state can be put into the appropriate data structure and the rules executed in the appropriate algorythm, and we can automate the generation of the (best fit) solution.
+These problems are solvable because we understand them, which means we have a mental model that we can describe to others in order to collaborate on the implementation of a solution. The state of the game is finite, the transforms are known, and can be described and codified. Once codified the state can be put into the appropriate data structure and the rules executed in the appropriate algorithm, and we can automate the generation of the (best fit) solution.
 
 ## Poorly Defined Problems
 
@@ -40,9 +40,9 @@ But what if you don't understand the problem, only the symptoms? What if you can
 
 Donald Rumsfelt's infamous "Unknown Unknowns" is relevant here. That is just one part of a four-part matrix:
 
-* Known Knowns (We know how many planes they have)
-* Known Unknowns  (We don't know what that is, but they sure have a lot of them)
-* Unknown Knowns (We know they have planes, but we don't know how many they have)
+* Known Knowns (We know how many planes they have.)
+* Known Unknowns  (We don't know what that is, but they sure have a lot of them.)
+* Unknown Knowns (We know they have planes, but we don't know how many they have.)
 * Unknown Unknowns (Look, shiny birds!)
 
 The deeper you are in unknown territory, the less you know about the state of the problem and how it looks. You don't know what the rules are or how to apply them. You don't know what success looks like and have no idea what the end goal is. There's no heuristic you can use to determine where you are right now, but you have to start somewhere, and part of that is breaking things down.
@@ -53,54 +53,54 @@ Image by [ElisaRiva](https://pixabay.com/users/elisariva-1348268/?utm_source=lin
 
 To begin tackling this, you need a mental scaffold on which to build your model, and onto this framework you will create a language that can be shared and understood by multiple parties. This ties into two concepts that we use regularly in software Domain Specific Languages, and Domain Driven Design.
 
-## Domain Specific Language
+## Domain-Specific Language
 
-> A Domain Specific Language is a programming language with a higher level of abstraction optimized for a specific class of problems. A DSL uses the concepts and rules from the field or domain. - [JetBrains](https://www.jetbrains.com/mps/concepts/domain-specific-languages/)
+> A Domain-Specific Language (DSL) is a programming language with a higher level of abstraction optimized for a specific class of problems. A DSL uses the concepts and rules from the field or domain. - [JetBrains](https://www.jetbrains.com/mps/concepts/domain-specific-languages/)
 
-While the quote above talks about programming languages specifically, the concept does not need to be programming related. My current focus is in the mobility field and parking rules are actually incredibly complex. Part of describing how these work involved defining a language we could use inside the company that provided common meaning:
+While the quote above talks about programming languages specifically, the concept does not need to be related to programming. I currently work in the field of mobility, and parking rules are incredibly complex. Part of describing how these work involved defining a shared company language that provided common meaning:
 
-- Bay: Place to Park
-- Vehicle: Cars, Vans, Motobikes, HGVs
-- Operating Hours: The time periods a bay is accessible for parking.
-- Tariff: The tariff structure applicable for a given time period.
-- Permit: A right to park for a given reason, Disabled Badge, Resident Badge, pre-payed voucher, commercial licence, etc.
-- Fuel: Petrol, Diesel, Electric
+- Bay: a place to Park
+- Vehicle: a cars, van, motorcycle or HGV
+- Operating Hours: the time periods a bay is accessible for parking
+- Tariff: the cost structure applicable for a given time period
+- Permit: a right to park for a given reason, such as a disabled badge, resident permit, pre-payed voucher, commercial licence, etc.
+- Fuel: petrol, diesel, electric
 
-These language terms (and many others) enable us to define and share the concepts of interest in the parking domain and form the foundations used to describe our system. The first part of identifying any problem is putting a name to the things you're looking at.
+These terms and many others enable us to define and share the concepts of interest in the parking domain, and form the foundation used to describe our system. The first part of identifying any problem is putting a name to the things you're looking at.
 
 Using the language we defined above, we can now describe our problem as: 
 
 _When we are looking to park a vehicle, we need to calculate the availability and price of parking in a bay for a period of time, where we take into account the rules around fuel and vehicle types, permits, discounts etc._
 
-## Domain Driven Design
+## Domain-Driven Design
 
-> Domain-driven design (less often, domain-driven design, DDD) is a set of principles and schemes aimed at creating optimal systems of objects. The development process boils down to creating software abstractions called domain models. These models include business logic that links the actual conditions of a product's application to the code. - [domaindrivendesign.org](https://domaindrivendesign.org/ddd-domain-driven-design/)
+> Domain-Driven Design (DDD) is a set of principles and schemes aimed at creating optimal systems of objects. The development process boils down to creating software abstractions called domain models. These models include business logic that links the actual conditions of a product's application to the code. - [domaindrivendesign.org](https://domaindrivendesign.org/ddd-domain-driven-design/)
 
-Once you have your DSL layered on top of your conceptual framework, you are now ready to start defining a system to solve the actual problem. Now that you can describe the problem domain in words, you can communicate with others to define the building blocks of the system.
+Once you have your DSL layered on top of your conceptual framework, you are ready to start defining a system to solve the actual problem. Now that you can describe the problem domain in words, you can communicate with others to define the building blocks of the system.
 
 ![Design](/assets/solving-problems/diagram.jpg)
 
 Photo by [Christina Morillo](https://www.pexels.com/@divinetechygirl?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels) from [Pexels](https://www.pexels.com/photo/white-dry-erase-board-with-red-diagram-1181311/?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels)
 
-Applying this process to the parking domain shed light on a number of concepts:
+Applying this process to the parking domain shed light on a number of important concepts:
 
-- Parking Session - A parking session which may or may not have payments.
-- Payment - Payment for a parking session
-- Occupancy - is a bay occupied or not? If a multi-bay, how many occupied spaces?
-- Authority - The top level legal entity responsible for a number of bays on the road.
+- Parking Session: a period of time a vehicle is parked which may or may not require payments
+- Payment: payment for a parking session
+- Occupancy: is a bay occupied? If a multi-bay, how many spaces are occupied?
+- Authority: the top-level legal entity responsible for bays on a road
 
-From these basic domain concepts, we evolved the following systems and tools that became the backbone of the company:
+The backbones of our systems then evolved from these these basic domain concepts:
 
-- Session Management System - A system that manages the start and end of parking sessions and notification of various events / milestones.
-- Session Pricing System - A system for determining occupancy options and price ranges.
-- Payments System - System for managing payment options for, and taking payments from the end user.
-- Map Editor - A system for authorities to edit their parking bays.
-- Availability system - A system for calculating the occupancy of a bays from a variety of IoT sensors / inputs.
+- Session Management: a system that manages the start and end of parking sessions and notification of various events / milestones.
+- Session Pricing: a system for determining occupancy options and price ranges.
+- Payments: a system for managing payment options for, and taking payments from, the end user.
+- Map Editor: a system for authorities to edit their parking bays.
+- Availability: a system for calculating the occupancy of a bays from a variety of Internet of Things sensors / inputs.
 
-Domain Driven Design is a large subject already written about at length, and there is much I haven't covered here. Head over to [domaindrivendesign.org](https://domaindrivendesign.org/) for a deeper dive.
+These compose the core ecosystem of AppyWay and represent the end result of refining a problem domain using DDD. The subject of Domain-Driven Design is a large and already written about at length. Head over to [domaindrivendesign.org](https://domaindrivendesign.org/) for a deeper dive.
 
 ## Conclusion
-Being a good engineer isn't just about our ability to solve hard problems. We need to be able to identify them in the first place, define them and frame them in terms that the business and colleagues understand, and only then do we get to the implementation / solution. And while building the solution is almost always fun, the amount of work required to frame and present the problem should not be overlooked.
+Being a good engineer isn't just about our ability to solve hard problems. We need to be able to identify them in the first place, define them and frame them in terms that the business and colleagues understand - and only then do we get to the implementation and solution. While building the solution is almost always the fun part, the amount of work required to frame and present the problem should not be overlooked.
 
 ### Credit
 Header Image by [fauxels](https://www.pexels.com/@fauxels?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels) from [Pexels](https://www.pexels.com/photo/people-discuss-about-graphs-and-rates-3184292/?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels)
