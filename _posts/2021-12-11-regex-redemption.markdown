@@ -179,4 +179,4 @@ And we can see that running against our range of formats [here](https://github.c
 
 ![Full Week Match](/assets/regex-redemption/ClockTimeConversion.PNG)
 
-I've spun up a small repo to play with these concepts, it's available [here](https://github.com/TristanRhodes/TextProcessing), and I'm going to use it as a sandbox to dive further into the really cool powerful things you can do with regex and tokens.
+Now we have the logic to determine if a string matches a Weekday or ClockTime pattern, and return the appropriate typed object we've got the first steps of a system to tokenise strings. I've spun up a small repo to play with these concepts, it's available [here](https://github.com/TristanRhodes/TextProcessing), and I'm going to use it as a sandbox to dive further into the really cool powerful things you can do with regex and tokens.
