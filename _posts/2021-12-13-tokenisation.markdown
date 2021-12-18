@@ -7,7 +7,7 @@ featured-image: /assets/tokenisation/featured-image.jpg
 ---
 ## Tokens
 
-In my [last post](/2021/12/11/regex-redemption.html), I talked about using Regex to match the pattern of a WeekDay or ClockTime string and unpacking this into a computer usable object. This process is called tokenisation, and the WeekDay and ClockTime are both instances of a token. Last time we only looked at converting a single token, but how do we begin to process a more complicated string of tokens, like taking a string made of a Day token and a Time token building a DayTime token?
+In my [last post](/2021/12/11/regex-redemption.html), I talked about using Regex to match the pattern of a WeekDay or ClockTime string and unpacking this into a meaningful object. This is known as Parsing, and we can see plenty of examples in the .Net framework, int.Parse(), Guid.Parse(), plus others. But how do we deal with parsing more complicated bodies of text that are made up of multiple words / parts?
 
 ```csharp
 "Monday 08:30am"
@@ -15,136 +15,58 @@ In my [last post](/2021/12/11/regex-redemption.html), I talked about using Regex
 "thurs 12:30pm"
 ```
 
-Well, to start with, let's add the logical concept of composition. A token can be composed of other tokens, so what we need is to have a Tokeniser that uses our Day tokenising logic and Time tokenising logic, runs them together and mashes them into a DayTime object.
+We're going to tackle this in two phases firstly we're going to split our text into parts and convert them into tokens (Tokenisation/Scanning phase), then we're going to check the tokens match a correct pattern and turn that into an object (Parsing phase).
 
-### Token Processing
+![Parsing](/assets/tokenisation/ParsingProcess.png)
 
-Token processing is composed of three concepts, a Token base object to represent a converted object, an ITokeniser interface that implements handling for detecting a string match and performing a conversion into a Token, and the TokenProcessor itself which runs the registered ITokeniser interfaces against each string and executes the relevant conversion.
-
-#### ITokeniser
-This interface takes a string, and returns a Tokenised version of it, the result indicates whether the tokenisation succeeded, and if so, what the value was.
+### Tokeniser
+To start with, we're going to need a Tokeniser for converting a complete string into tokens. This is going to need a split pattern and a number of ITokenProcessors to identify and convert the individual string fragments.
 
 ```csharp
-public interface ITokeniser<T>
+public class Tokeniser
 {
-    Tokenised<T> Tokenise(string token);
-}
-```
+    Regex _splitPattern;
+    IList<ITokenProcessor> _tokenisers;
 
-#### Tokenised
-This is the response from the above interface, it represents a tokenisation attempt on a string.
-
-```csharp
-public class Tokenised<T>
-{
-    T _value;
-    private Tokenised(string text)
+    public Tokeniser(string splitPattern, params ITokenProcessor[] tokenisers)
     {
-        Text = text;
-        Success = false;
+        _splitPattern = new Regex(splitPattern);
+        _tokenisers = tokenisers.ToList();
     }
 
-    public Tokenised(string text, T value) 
+    public IEnumerable<Token> Tokenise(string inputString)
     {
-        Text = text;
-        _value = value;
-        Success = true;
-    }
-
-    public string Text { get; }
-
-    public T Value => 
-        Success ? _value : throw new ApplicationException("Did not succeed");
-
-    public bool Success { get; }
-
-    public override string ToString() =>
-        $"{this.GetType().Name}: {Value}";
-
-    public static Tokenised<T> Failed(string text) => 
-        new Tokenised<T>(text);
-}
-```
-
-With this in place, we now need to take the logic from the original post for matching and parsing DayOfWeek and LocalTime and implement our ITokeniser interface.
-
-#### WeekDay
-
-```csharp
-public class WeekDayTokeniser : ITokeniser<DayOfWeek>
-{
-    Regex regex = new Regex("^(?<Monday>[Mm]on(day)?)|(?<Tuesday>[Tt]ue(sday)?)|(?<Wednesday>[Ww]ed(nesday)?)|(?<Thursday>[Tt]hu(rs(day)?)?)|(?<Friday>[Ff]ri(day)?)|(?<Saturday>[Ss]at(urday)?)|(?<Sunday>[Ss]un(day)?)$");
-
-    public Tokenised<DayOfWeek> Tokenise(string token)
-    {
-        var match = regex.Match(token);
-        if (!match.Success)
-            return Tokenised<DayOfWeek>.Failed(token);
-
-        if (match.Groups["Monday"].Success)
-            return new Tokenised<DayOfWeek>(token, DayOfWeek.Monday);
-
-        if (match.Groups["Tuesday"].Success)
-            return new Tokenised<DayOfWeek>(token, DayOfWeek.Tuesday);
-
-        if (match.Groups["Wednesday"].Success)
-            return new Tokenised<DayOfWeek>(token, DayOfWeek.Wednesday);
-
-        if (match.Groups["Thursday"].Success)
-            return new Tokenised<DayOfWeek>(token, DayOfWeek.Thursday);
-
-        if (match.Groups["Friday"].Success)
-            return new Tokenised<DayOfWeek>(token, DayOfWeek.Friday);
-
-        if (match.Groups["Saturday"].Success)
-            return new Tokenised<DayOfWeek>(token, DayOfWeek.Saturday);
-
-        if (match.Groups["Sunday"].Success)
-            return new Tokenised<DayOfWeek>(token, DayOfWeek.Sunday);
-
-        return Tokenised<DayOfWeek>.Failed(token);
-    }
-}
-```
-
-#### ClockTime
-
-```csharp
-public class ClockTimeTokeniser : ITokeniser<LocalTime>
-{
-    Regex regex = new Regex(@"^(((?<hr>[01]?\d|2[0-3]):(?<min>[0-5]\d|60))|((?<hr>([0]?\d)|1[0-2]):(?<min>[0-5]\d|60)((?<am>am)|(?<pm>pm))))?$");
-
-    public Tokenised<LocalTime> Tokenise(string token)
-    {
-        var match = regex.Match(token);
-        if (!match.Success)
-            return Tokenised<LocalTime>.Failed(token);
-
-        var hour = int.Parse(match.Groups["hr"].Value);
-        var min = int.Parse(match.Groups["min"].Value);
-        var am = match.Groups["am"].Success;
-        var pm = match.Groups["pm"].Success;
-        var twentyFourHr = !am && !pm;
-
-        if (twentyFourHr)
+        var parts = _splitPattern.Split(inputString);
+        foreach(var part in parts)
         {
-            return new Tokenised<LocalTime>(token, new LocalTime(hour, min));
-        }
-        if (am)
-        {
-            return new Tokenised<LocalTime>(token, new LocalTime(hour == 12 ? 0 : hour, min));
-        }
-        else if (pm)
-        {
-            return new Tokenised<LocalTime>(token, new LocalTime(hour == 12 ? 12 : hour + 12, min));
-        }
+            var match = _tokenisers
+                .Where(t => t.IsMatch(part))
+                .Select(t => t.Tokenise(part))
+                .FirstOrDefault();
 
-        return Tokenised<LocalTime>.Failed(token);
+            yield return match == null ?
+                Token.Create(part) :
+                match;
+        }
     }
 }
+
+public interface ITokenProcessor
+{
+    bool IsMatch(string token);
+    Token Tokenise(string token);
+}
 ```
-#### DayTime
-Now to support our higher order concept, we create the DayTime ITokeniser implementation that uses the two tokenisers above.
+
+We will now need to port the logic from the original post for matching and parsing DayOfWeek and LocalTime and implement our ITokenProcessor interface, then drop them all into a token processor...
+
+![Token Tests](/assets/tokenisation/ConvertedTokensTest.PNG)
+
+Now we have an array of Tokens generated from a string, with tokens that match a specific Tokeniser rule being captured and converted, note that I've also included an integer converter. But we still need something that checks if these tokens are a recognizable configuration, and then converts this into a meaningful object.
+
+### "Parsing" a complete DayTime
+
+Our DayTime object is composed of two parts, the Day and the Time. All we need now s#is to create a simple parser that takes an array of Tokens[] and populates the fields in a DayTime object.
 
 ```csharp
 public class DayTime
@@ -159,102 +81,55 @@ public class DayTime
     public LocalTime LocalTime { get; }
 }
 
-public class DayTimeTokeniser : ITokeniser<DayTime>
+public class SimpleDayTimeParser : IParser<DayTime>
 {
-    WeekDayTokeniser _weekDayTokeniser = new WeekDayTokeniser();
-    ClockTimeTokeniser _timeTokeniser = new ClockTimeTokeniser();
-
-    public Tokenised<DayTime> Tokenise(string token)
+    public bool IsMatch(Token[] tokens)
     {
-        var parts = token.Split(' ');
-        if (parts.Length != 2)
-            return Tokenised<DayTime>.Failed(token);
+        if (tokens.Length != 2) return false;
+        if (!tokens[0].Is<DayOfWeek>()) return false;
+        if (!tokens[1].Is<LocalTime>()) return false;
+        return true;
+    }
 
-        var weekDay = _weekDayTokeniser.Tokenise(parts[0]);
-        if (!weekDay.Success)
-            return Tokenised<DayTime>.Failed(token);
+    public DayTime Parse(Token[] tokens)
+    {
+        if (!IsMatch(tokens))
+            throw new ApplicationException("Bad Match");
 
-        var time = _timeTokeniser.Tokenise(parts[1]);
-        if (!time.Success)
-            return Tokenised<DayTime>.Failed(token);
-
-        return new Tokenised<DayTime>(token, 
-            new DayTime(weekDay.Value, time.Value));
+        return new DayTime(
+            tokens[0].As<DayOfWeek>(),
+            tokens[1].As<LocalTime>());
     }
 }
 ```
 
-##### Note:
-It's worth taking a closer look at the updated ClockTime regex as this now selects for &lt;12 hrs with am/pm suffix or &lt;24 hrs for no suffix, it's a bit more complex, but there's no need for number validation against the pattern and a chance of a false positive that then causes an error when converting.
+And that's it, we can convert our two part string into a higher order object.
 
-### Array of Tokens
-Now we've got our tokeniser and we've got our two token types, we can generate a token list from a string, and test that the tokens generated correctly. Here it is in action.
+![Parsed DayTime](/assets/tokenisation/ParsedDayTime.PNG)
 
-![Token Tests](/assets/tokenisation/TokenTests.PNG)
-
-### DayTimeToken
-
-This is good progress, but we're still missing the last step, we need to turn that whole string into a single DayTime object. We need a new class, and bit of conversion logic:
+### Expression Trees and Parsers
+Our "parser" implementation is a bit of an overstatement here, this is the most naive logic we can get. It doesn't have any flexibility for supporting more complex structures and is only going to support a very explicit match. If we wanted to extend this to support more complex patterns, we're going to be quite limited. Consider trying to solve the following patterns:
 
 ```csharp
-public class DayTimeToken : Token
-{
-    public DayTimeToken(string value, DayOfWeek day, LocalTime localTime)
-        : base(value)
-    {
-        Day = day;
-        LocalTime = localTime;
-    }
-
-    public DayOfWeek Day { get; }
-    public LocalTime LocalTime { get; set; }
-}
-
-public DayTimeToken Convert(string text)
-{
-    var parts = text.Split(" ");
-
-    var tokens = _tokenProcessor
-        .Tokenise(parts);
-
-    if (tokens.Length != 2)
-        throw new ArgumentException("Unexpected token array length");
-
-    var weekDay = tokens[0] as WeekDayToken;
-    var clockTime = tokens[1] as ClockTimeToken;
-
-    if (weekDay is null)
-        throw new ApplicationException("No WeekDay token");
-
-    if (clockTime is null)
-        throw new ApplicationException("No ClockTime token");
-
-    return new DayTimeToken($"{weekDay.Value} {clockTime.Value}", weekDay.DayOfWeek, clockTime.LocalTime);
-}
-```
-
-Now this runs nicely, we can split our string, convert it into an array of tokens, and convert those tokens into a higher order object and wrap that functionality in a tidy method.
-
-![Token Tests](/assets/tokenisation/ConvertedTokensTest.PNG)
-
-### Next Steps
-
-We're catering here for DayTime, But there's something still missing. This feels quite naive, and not really extensible. We can only convert an exact match of day time, and there is no flexibility to compose more complex patterns. To really make our system extensible, we will need to be able to build out support for more complex patterns:
-
-```csharp
-// Seperate start / end elements
+// Separate two part element context
 "Pickup Mon 08:00 dropoff wed 17:00"
 
 // Range elements
 "Open Mon to Fri 08:00 to 18:00"
 
-// Repeating elements
-"Tours Monday to Friday 10:00 12:00 14:00 17:00 20:00"
+// Repeating tokens
+"Tours 10:00 12:00 14:00 17:00 20:00"
+
+// Repeating complex elements
+"Events Tuesday 18:00 Wednesday 15:00 Friday 12:00"
 ```
 
-So what can we do about this? How do we make our system more flexible when dealing with complex expressions? The first step, we're going to make a Token contain a list of other Tokens. This means that we can turn our Tokens into a tree that represents a syntax structure, or syntax tree.
+To solve these problems, we're going to need a parser with the ability to process an expression tree, and we'll get to that next. 
 
-Something still needs to build that though, and that is a SyntaxProcessor. 
+All the code is available in a small sandbox project I'm building to go along with a couple of posts [here](https://github.com/TristanRhodes/TextProcessing).
+
+### Note
+You can do your parsing in one step, using an approach known as scannerless parsing (We'll get to [Sprache](https://github.com/sprache/Sprache) later), but there are a few benefits to splitting it out. It's easier to work in data sanitisation at the Tokenisation phase, and keep the actual syntax rules clear of all the more fuzzy token patterns, but as with all things, how you do it will depend on what you need to achieve.
 
 ### Credits
 
