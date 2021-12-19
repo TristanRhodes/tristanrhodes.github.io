@@ -66,7 +66,7 @@ Now we have an array of Tokens generated from a string, with tokens that match a
 
 ### "Parsing" a complete DayTime
 
-Our DayTime object is composed of two parts, the Day and the Time. All we need now s#is to create a simple parser that takes an array of Tokens[] and populates the fields in a DayTime object.
+Our DayTime object is composed of two parts, the Day and the Time. All we need now is to create a simple parser that takes an array of Tokens[] and populates the fields in a DayTime object.
 
 ```csharp
 public class DayTime
