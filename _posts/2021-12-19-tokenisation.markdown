@@ -135,8 +135,8 @@ Our "parser" implementation is a bit of an overstatement here, this is the most 
 // Separate two part element context
 "Pickup Mon 08:00 dropoff wed 17:00"
 
-// Range elements
-"Open Mon to Fri 08:00 to 18:00"
+// Range elements with different separators
+"Open Mon to Fri 08:00 - 18:00"
 
 // Repeating tokens
 "Tours 10:00 12:00 14:00 17:00 20:00"
