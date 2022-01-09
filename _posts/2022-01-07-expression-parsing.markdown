@@ -28,7 +28,7 @@ Selecting exactly two values into a single object is simple, but when things bec
 
 You read an expression tree from left leaf to right leaf, with each branch node being a syntax rule and each leaf element being a token extracted from the original sentence. We can start by describing our original parsing subject, DayTime:
 
-![Parsed DayTime](/assets/expression-parsing/expression-tree-daytime.PNG)
+![Parsed DayTime](/assets/expression-parsing/expression-tree-daytime.png)
 
 This is simple enough, but our sentences are more complex concepts than this, a higher order object can be composed of other higher order concepts, and what is a root for some scenarios may be a child for others. Consider the expression trees for the scenarios above:
 
