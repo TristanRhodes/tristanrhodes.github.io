@@ -47,17 +47,17 @@ This is simple enough, but our sentences are more complex concepts than this, a 
   </tr>
 </table>
 
-### Basic Parsers
+### Basic Parser Rules
 
-In order to begin to process the above scenarios, we're going to need to create some parsers to handle our expression rules, let's stick with those needed just for handling DayTime for now:
+In order to begin to process the above scenarios, we're going to need something to handle our expression rules, let's stick with those needed just for handling DayTime for now:
 
 * IsToken - A parser that matches a single token. (These would be the blue Token nodes in the tree)
 * Then - A parser that matches two consecutive parsers together in a chain.
-* Select - A parser that converts the result of one Parser into a different object type. (These would be the purple higher order nodes in the tree)
+* Select - A parser that converts the result of one Parser into a different result type. (These would be the purple higher order nodes in the tree)
 
 ### Parser Chaining
 
-How do you start to combine these together? We are in a situation where we have a list of tokens we want to provide to a parser, but we also want to put a parser inside another parser and do some magic... We're missing some key concepts. Let's go back to our naive parser implementation:
+How do you start to combine these together? We are in a situation where we have a list of tokens we want to provide to a parser, but we also need to put a parser inside another parser and do some magic... We're missing some key concepts. Let's go back to our naive parser implementation:
 
 ```csharp
 public interface IParser<T>
@@ -112,7 +112,33 @@ public class ParseResult<T>
     public Position Position { get; }
 }
 ```
-Let's look at the Then implementation to give us an idea of how a single Parser instance works. Note how we have a first parser, representing the syntax on the left, and a function to generate the second parser, which we run and use to evaluate the syntax on the right but only if the first parser is successful:
+
+Now let's look at some implementations to get an idea of what they do individually.
+
+
+### Basic implementations
+
+#### IsToken
+
+We can start with the most basic check, see if the current position is a match for the Token, and if it is, return the next position and the result, otherwise return a failure at the current position. We'll use this to check for Day and LocalTime.
+
+```csharp
+public class IsToken<T> : IParser<T>
+{
+    public IsToken() { }
+
+    public ParseResult<T> Parse(Position position)
+    {
+        return position.Current.Is<T>() ?
+            ParseResult<T>.Successful(position.Next(), position.Current.As<T>()) :
+            ParseResult<T>.Failure(position);
+    }
+}
+```
+
+#### Then
+
+The Then implementation contains a first parser, representing the syntax on the left, and a function to generate the second parser, which we run and use to evaluate the syntax on the right but only if the first parser is successful. In our scenario, we will be looking for an Is&lt;DayOfWeek> on the left, followed by Is&lt;LocalTime> on the right.
 
 ```csharp
 public class Then<T, U> : IParser<U>
@@ -145,9 +171,37 @@ public class Then<T, U> : IParser<U>
 }
 ```
 
+#### Select
+
+Select takes a core Parser as an argument and a converter function. When the core parser is successful, the result is fed into the converter function and the converted result is returned. Here, our converter method will pass in the previous two values and generate our DayTime.
+
+```csharp
+public class Select<T, U> : IParser<U>
+{
+    IParser<T> _core;
+    Func<T, U> _converter;
+
+    public Select(IParser<T> core, Func<T, U> converter)
+    {
+        _core = core;
+        _converter = converter;
+    }
+
+    public ParseResult<U> Parse(Position position)
+    {
+        var result = _core.Parse(position);
+        position = result.Position;
+
+        return result.Success ?
+            ParseResult<U>.Successful(position, _converter(result.Value)) :
+            ParseResult<U>.Failure(position);
+    }
+}
+```
+
 Using this pattern, we can build a tree of parsers to represent our expression and run this over our Token array. 
 
-### Parser implementation
+### Putting it together
 Let's take our original naive parser for DayTime, and replace it with our new parser setup.
 
 ```csharp
@@ -209,14 +263,19 @@ But this is only a parser for our basic scenario, right? We've added a whole bun
 Well... not quite. Now we can create parsers from other parsers; that's what we did when we created our DayTimeParser from Is&lt;DayOfWeek> and Is&lt;LocalTime> checks, so let's take our pickup / dropoff scenario above, where our DayTimeParser can point to either of our fluent/non-fluent implementations:
 
 ```csharp
+// This parser returns a DayTime where it is preceded by a PickupFlag
 public static IParser<DayTime> PickupDayTime => Parsers
     .IsToken<PickupFlag>()
         .Then(_ => DayTimeParser);
 
+// This parser returns a DayTime where it is preceded by a Dropoff flag
 public static IParser<DayTime> DropOffDayTime => Parsers
     .IsToken<DropoffFlag>()
         .Then(_ => DayTimeParser);
 
+// This parser returns a PickupDropOff object that is derived from a 
+// sequential Pickup/Dropoff match. Note that each of the Pickup/Dropoff
+// parsers return a DayTime.
 public static IParser<PickupDropoff> PickupDropOff => 
     PickupDayTime.Then(pu => 
         DropOffDayTime.Select(dr => 
@@ -230,10 +289,10 @@ And that's it, we've got our text with our pickup DayTime and our dropoff DayTim
 
 ### Completing the set
 
-We're still pretty limited in terms of what we can do with our original Is/Then/Select parsers, we can't cater to some of the more complex scenarios. We're going to need a few more.
+We're still pretty limited in terms of what we can do with our original Is/Then/Select parsers, we can't cater to some of the more complex scenarios. We're not done yet.
 
 #### Or
-A parser that matches one of multiple child parsers of the same result type. Let's say we want to treat two different Tokens the same way; we need something conditional in our expression to indicate that one term must be true. Let's take an expression where we want to use "to" or "-" to indicate that we are matching a term describing a range between two values.
+A parser that matches one of multiple child parsers of the same result type. Let's say we want to treat two different Tokens the same way; we need something conditional in our expression to indicate that one expression must be a match. Let's take an expression where we want to use "to" or "-" to indicate that we are matching a term describing a range between two values.
 
 ![Range Expression](/assets/expression-parsing/expression-tree-range.png)
 
@@ -255,9 +314,13 @@ public static IParser<Range<LocalTime>> TimeRangeParser =
                 .Select(to => new Range<LocalTime> { From = from, To = to })));
 ```
 
+And we can match 12 or 24 hour clocks, separated by a range marker of "to" or "-".
+
+![Pickup Dropoff Tests](/assets/expression-parsing/range-parser-tests.png)
+
 #### ListOf
 
-A parser that matches a number of items against a single child parser and returns a List of the child parser values:
+A parser that matches a number of items against a single child parser and returns a list of the child parser values:
 
 ```csharp
 ParseResult<List<DayTime>> result = Parsers
@@ -269,15 +332,14 @@ ParseResult<List<DayTime>> result = Parsers
 
 #### End
 
-A parser that determines if the result is the end of the Token array.
-And a parser to validate that we are at the end of our token arrays. This prevents a match that has trailing tokens that are not covered by the complete parsing expression.
+A parser that determines if the result is the end of the Token array. This prevents a match from being successful when there are unconsumed tokens from the complete parsing expression.
 
 ```csharp
 public static IParser<DayTime> ExplicitDayTimeParser =
     DayTimeParser.End();
 ```
 
-All of these lovely Parser implementations are available [here](https://github.com/TristanRhodes/TextProcessing/blob/master/TextProcessing/OO/Parsers/Parsers.cs), with the configurations for the origional sentence structures [here](https://github.com/TristanRhodes/TextProcessing/blob/master/TextProcessing/OO/Parsers/ExpressionParsers.cs). There might even be some tests in there somewhere.
+All of these lovely Parser implementations are available [here](https://github.com/TristanRhodes/TextProcessing/blob/master/TextProcessing/OO/Parsers/Parsers.cs), with the configurations for the original sentence structures [here](https://github.com/TristanRhodes/TextProcessing/blob/master/TextProcessing/OO/Parsers/ExpressionParsers.cs). There might even be some tests in there somewhere.
 
 ### Turtles
 
