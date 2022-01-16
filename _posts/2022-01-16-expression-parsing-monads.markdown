@@ -111,7 +111,7 @@ Final Note: All monads are functors, but not all functors are monads.
 
 <p align="center"><iframe src="https://giphy.com/embed/0Av9l0VIc01y1isrDw" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/drinkdroplet-hero-captain-planet-savetheplanet-0Av9l0VIc01y1isrDw">via GIPHY</a></p></p>
 
-Let's start with two functions, baseValue() which returns 0, and add(), which runs baseValue(), adds 1 to it and returns the result of that.
+Let's start with two functions, baseValue() which returns 0, and add(), which is a function that runs baseValue() and returns the result + 1.
 
 ```csharp
 [Fact]
@@ -158,7 +158,7 @@ public void NestedFunctionTest()
 }
 ```
 
-I believe this is now a fully qualified Monad. We have a bridge that can nest and chain our functions and accumulate the result, but we need to be able to do more than just add 1, we need a value parameter. 
+I believe this is now a fully qualified Monad. We have a bridge that can nest and chain our functions and total the result, but we need to be able to do more than just add 1, we need a value parameter. 
 
 ```csharp
 [Fact]
@@ -303,11 +303,11 @@ public abstract class IsTokenConditionBase<T> : IParser<T>
 Now we've got a base class we can use to implement conditions, let's create a check for ints over a certain value.
 
 ```csharp
-public class NumberOverParser : IsTokenConditionBase<int>
+public class IsIntegerOver : IsTokenConditionBase<int>
 {
     int _value;
 
-    public NumberOverParser(int value) =>
+    public IsIntegerOver(int value) =>
         _value = value;
 
     public override bool check(int entity) =>
@@ -315,7 +315,7 @@ public class NumberOverParser : IsTokenConditionBase<int>
 }
 ```
 
-By now, your spider senses should be tingling. This route is the route to great pain, we're going to be creating a _looooot_ of either base classes, or classes that use base classes, and it feels like a trap. What about if we make it flexible by supplying our check as a delegate?
+By now, your spider senses should be tingling. This route is the route to great pain, we're going to be creating a _looooot_ of base classes and classes that use configurations of them and it feels like a trap. What about if we make it flexible by supplying our check as a delegate?
 
 ```csharp
 public class FlexibleIsTokenCondition<T> : IParser<T>
@@ -423,7 +423,7 @@ public static TokenParser JoiningWord = Tokeniser
 
 ### Monad Parsers vs Functor Parsers
 
-If we look back to the original Parser implementations and have a closer look at what they do, we'll see that they aren't all specifically Monads or Functors. I'm not confident enough to accurately categorize them, but have a think about where they sit relative to the functional concepts described above:
+If we have a closer look at the original Parser implementations, we'll see that they aren't all specifically Monads or Functors. I'm not confident enough to accurately categorize them, but have a think about where they sit relative to the functional concepts described above:
 
 * Is - Parser&lt;T&gt; IsToken&lt;T&gt;()
 * Then - Parser&lt;U&gt; Then&lt;T, U&gt;(Parser&lt;T&gt; first, Func&lt;T, Parser&lt;U&gt;&gt; second)
@@ -465,15 +465,17 @@ public static Parser<DayTime> DayTimeFluentParser =
             new DayTime { Day = dow, LocalTime = lt }));
 ```
 
-It's interesting to note that when you apply the fluent API, both the OO and Functional code is now identical on the surface. The OO pattern is still packaging object => delegate => object => delegate, but at least it's tidy. In the new functional implementation it's just delegates all the way.
+And now we can do the same for all of the other [combinations of parsers](https://github.com/TristanRhodes/TextProcessing/blob/master/TextProcessing/Functional/Parsers/ExpressionParsers.cs) that we have, pure functions and functional combinators.
 
 ### Code
 
-The code is all available here [here](https://github.com/TristanRhodes/TextProcessing) where I put together a bunch of different ways to do parsing. We've just covered the functional part, so check out the [Functional folder](https://github.com/TristanRhodes/TextProcessing/tree/master/TextProcessing/Functional).
+The code is all available [here](https://github.com/TristanRhodes/TextProcessing) where I put together a bunch of different ways to do parsing. We've just covered the functional part, so check out the [Functional folder](https://github.com/TristanRhodes/TextProcessing/tree/master/TextProcessing/Functional).
 
 ### Note
 
-I cheated in my last post and the "Object Orientated Approach" is actually a hybrid, but I find it helps bridge the gap between OO and functional concepts.
+It's interesting to note that when you apply the fluent API, both the OO and Functional code is now identical on the surface. The OO pattern is still packaging object => delegate => object => delegate, but at least it's tidy. In the new functional implementation it's just delegates all the way.
+
+The reason they are so similar is that I cheated in my last post and the "Object Orientated Approach" is actually a hybrid, but I find it helps bridge the gap between the OO and functional concepts.
 
 ### Credits
 Header Image by <a href="https://pixabay.com/users/jackmac34-483877/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=970943">jacqueline macou</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=970943">Pixabay</a>
