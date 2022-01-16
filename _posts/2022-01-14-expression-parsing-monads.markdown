@@ -1,14 +1,36 @@
 ---
 layout: post
 author: tristan-rhodes
-title: Expression Parsing - Monad Edition
-excerpt: Magic with Monads
+title: Expression Parsing - Functional Edition
+excerpt: Magic with Monads (and Functors)
 featured-image: /assets/expression-parsing-monads/featured-image.jpg
 ---
 
 ### Previously
 
-Starting with a lexer system to split a string into a feed of typed Tokens using an ITokeniser interface. We then created a couple of basic parsers out of an IParser<T> interface to process the resulting token arrays.
+In my [previous post](/2022/01/07/expression-parsing.html), we created a basic set of object orientated parser implementations to handle converting some simple expressions.
+
+```csharp
+// Separate two part element context => DayTime range
+"Pickup Mon 08:00 dropoff wed 17:00"
+
+// Range elements with different separators => Open Days range and Hours Range
+"Open Mon to Fri 08:00 - 18:00"
+
+// Repeating tokens => List of tour times
+"Tours 10:00 12:00 14:00 17:00 20:00"
+
+// Repeating complex elements => List of event day times
+"Events Tuesday 18:00 Wednesday 15:00 Friday 12:00"
+```
+
+### In Action
+
+![Pickup Dropoff Tests](/assets/expression-parsing/pickup-dropoff-tests.PNG)
+
+### The System
+
+The system is two phase, with an initial Lexer/Tokeniser that splits a string into identified parts, and a combinatorial parser system that matches a complex pattern and converts this into a higher order object. We've been following an Object Orientated style so far with interfaces and implementation classes. 
 
 ```csharp
 // Converts words into typed concepts
@@ -39,36 +61,57 @@ public static class ParserExtensions
 * ListOf
 * End
 
-Finally we combined these parsers to convert a couple of different patterns into objects:
+### Going Functional
 
-```csharp
-// Separate two part element context => DayTime range
-"Pickup Mon 08:00 dropoff wed 17:00"
-
-// Range elements with different separators => Open Days range and Hours Range
-"Open Mon to Fri 08:00 - 18:00"
-
-// Repeating tokens => List of tour times
-"Tours 10:00 12:00 14:00 17:00 20:00"
-
-// Repeating complex elements => List of event day times
-"Events Tuesday 18:00 Wednesday 15:00 Friday 12:00"
-```
-
-Now we're going to drop the interface implementations, make them all delegates and take an entirely functional approach. This leads us down the path to Monads.
+Now we're going to drop the interface implementations, make them all delegates and take an entirely functional approach.
 
 ```csharp
 public delegate TokenisationResult TokenParser(string token);
 public delegate ParseResult<T> Parser<T>(Position position);
 ```
 
+### Disclaimer
+
+While I use functional programming regularly, I don't come from a functional background, so I may be butchering some terms. I've tried to be as accurate as possible, but the concepts feel kind of fuzzy and share many similar attributes with each other, so I may blur the boundaries a bit.
+
+### Main Players
+
+There are a couple of concepts that we need words for in order to properly describe whats going on. 
+
+* [Functors](https://en.wikipedia.org/wiki/Functor_(functional_programming))
+* [Monads](https://en.wikipedia.org/wiki/Monad_(functional_programming))
+* [Combinators / Combinatory Logic](https://en.wikipedia.org/wiki/Combinatory_logic)
+
+Now, if you click on any of those links, you'll be confronted with a lot of mathsy looking stuff that's heavy on symbols and steeped in category theory. Monads also seem to have this logical fallacy around them that once you understand Monads, you cannot explain them to people who don't. But I think I'm safe, because I still don't understand them...
+
+### Functor
+Wikipedia: 
+> In functional programming, a functor is a design pattern inspired by the definition from category theory, that allows for a generic type to apply a function inside without changing the structure of the generic type.
+
+Me: 
+> A function that turns one thing into a another thing.
+
+### Combinator
+Wikipedia: 
+> A combinator is a higher-order function that uses only function application and earlier defined combinators to define a result from its arguments.
+
+Me: 
+> One or more functions used to generate a result inside another function.
+
 ### Monads
+Wikipedia:
+> In functional programming, a monad is a type that wraps another type and gives some form of quality to the underlying type. In addition to wrapping a type, monads define two functions: one to wrap a value in a monad, and another to compose together functions that output monads (these are known as monadic functions).
 
-So, what are monads? Before we start on that, Monads seem to have this logical fallacy around them that once you understand Monads, you cannot explain them to people who don't. But I think I'm safe, because I still don't understand Monads, so here we go...
+Me:
+> A function that you wrap in another function of the same type to decorate / extend its behavior.
 
-In the context of functional programming, a Monad is a function that wraps another function, and passes the result of the nested function back through the context of the wrapper. The function that is wrapped has access to all the contexts that wrap it, like a Russian doll knowing everything about its parents, and nothing about its children. They are simple like fractals, but fractals can create incredibly complex results.
+Final Note: All monads are functors, but not all functors are monads.
 
-The bit I always find myself a bit fuzzy on is what is the exact boundry where something becomes a monad / no-longer a monad. Anyway, let's start with a nested function.
+### Functional Flow
+
+<p align="center"><iframe src="https://giphy.com/embed/0Av9l0VIc01y1isrDw" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/drinkdroplet-hero-captain-planet-savetheplanet-0Av9l0VIc01y1isrDw">via GIPHY</a></p></p>
+
+Let's start with two functions, baseValue() which returns 0, and add(), which runs baseValue(), adds 1 to it and returns the result of that.
 
 ```csharp
 [Fact]
@@ -82,16 +125,15 @@ public void BasicNestedFunctionTest()
     Func<int> add = () =>
         baseValue() + 1;
 
-    // Run the add function, returning the result of basevalue, + 1
+    // Run the add function, returning the result of basevalue() + 1
     add()
         .Should().Be(1);
 }
 ```
 
-Ok, this adds 1 to the result of another function. Not too useful, but both the 
-baseValue() and add() are Func&lt;int>, meaning they take no parameters and return an int.
+When we run add, we get 1 added to the result of another function. Not too useful, but both the baseValue() and add() are Func&lt;int>, meaning they are functions that take no parameters and return an int.
 
-This means that we can put one Func&lt;int> inside another Func&lt;int>, and what we have is still a single Func&lt;int> that acts as a bridge between the other two.
+This means that, as they have the same function footprint, we can apply a combinator pattern and put one Func&lt;int> inside another Func&lt;int>, and what we have is still a single Func&lt;int> that acts as a bridge between the other two.
 
 ```csharp
 [Fact]
@@ -116,7 +158,7 @@ public void NestedFunctionTest()
 }
 ```
 
-Now we can start nesting functions and accumulating the result, but we need to be able to do more than just add 1, we need a value parameter. 
+I believe this is now a fully qualified Monad. We have a bridge that can nest and chain our functions and accumulate the result, but we need to be able to do more than just add 1, we need a value parameter. 
 
 ```csharp
 [Fact]
@@ -143,50 +185,84 @@ public void MonadNestingTest()
 }
 ```
 
-Ok, so now we're composing nested sets of our supplied values. I believe this is now a fully qualified monad, but the configuration is still fiddly and unintuitive. We can tidy this up with some fluent helpers.
+Now let's say we want to take our number and turn it into a monetary string, so what we want is a Func&lt;string> that is going to be wrapping/converting a Func&lt;int>, this is where we're going to apply our combinator pattern against a functor. (I believe that while a Monad always chains functions, a Functor is just a converter of types, and those types _can_ be functions.)
+
+```csharp
+[Fact]
+public void MonadNestingFunctorTest()
+{
+    Func<int> baseValue = () => 0;
+
+    // A Function that takes a value and a function and returns a function that 
+    // adds the value to the result of the function.
+    Func<int, Func<int>, Func<int>> add =
+        (int value, Func<int> baseValue) =>
+            () => baseValue() + value;
+
+    // Function that takes a Func<int> and returns a Func<string> that runs the Func<int>,
+    // turns the result into a string and prefixes it with the &pound; symbol
+    Func<Func<int>, Func<string>> asGBPString =
+        (Func<int> baseValue) =>
+            () => $"&pound;" + baseValue();
+
+    // A function returning a baseValue, inside an add(1), inside an add(2), 
+    // inside an add(3), inside an asString()
+    Func<string> price =
+        asGBPString(
+            add(3,
+                add(2,
+                    add(1,
+                        baseValue))));
+
+    price()
+        .Should().Be("&pound;6");
+}
+```
+
+So now we're composing nested additions with our values and converting the result into a formatted string, but the configuration is still fiddly and unintuitive. We can tidy this up with some fluent helpers.
 
 ```csharp
 public static class Beginning
 {
-    // Static method that returns a function that returns the supplied value. 
     public static Func<int> With(int value) =>
         () => value;
 }
 
 public static class MonadExtensions
-{ 
-    // An extension method on a delegate function that takes a 
-    // value and returns a function that adds the value to the 
-    // result of the base function.
+{
     public static Func<int> Add(this Func<int> baseValue, int value) =>
         () => baseValue() + value;
+
+    public static Func<string> AsGBPString(this Func<int> baseValue) =>
+        () => $"&pound;" + baseValue();
 }
 ```
 
-And our updated code looks like this:
+And our updated code makes our nesting come out as a flat chain:
 
 ```csharp
 [Fact]
 public void MonadChainFluentTest()
 {
-    Func<int> total =
+    Func<string> price =
         Beginning
             .With(0)
             .Add(1)
             .Add(2)
-            .Add(3);
+            .Add(3)
+            .AsGBPString();
 
-    total()
-        .Should().Be(6);
+    price()
+        .Should().Be("&pound;6");
 }
 ```
 
 Much cleaner. So the equation here is
 
-> Monads + Fluent API = Magic
+> Functions + Fluent API = Magic
 
 ### Wait a second
-If you read my last post, this will feel familiar, and it should do, because we were chaining functions that returned IParsers and using extension methods on the interface. This time, we don't have an interface, so we're putting _extension methods onto a Delegate_. 
+If this feels familiar to any C# developers, it should, because this pattern is the backbone of Linq and the Lambda based composable query system. Linq extends and chains IEnumerable, and in my last post we were chaining functions that returned IParsers and using extension methods on the interface. This time, we don't have an interface, so we're putting _extension methods onto a Delegate_. 
 
 <p align="center"><iframe src="https://giphy.com/embed/xT0xeJpnrWC4XWblEk" width="480" height="320" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/whoa-hd-tim-and-eric-xT0xeJpnrWC4XWblEk">via GIPHY</a></p></p>
 
@@ -194,138 +270,11 @@ If you read my last post, this will feel familiar, and it should do, because we 
 
 But what does this mean, and why is it useful to us?
 
-Let's start with one of our original Token Parsers:
-
-```csharp
-public class JoiningWordTokenParser : ITokenParser
-{
-    Regex regex = new Regex(@"^[Tt]o$");
-
-    public TokenisationResult Tokenise(string token)
-    {
-        return regex.IsMatch(token) ? 
-            TokenisationResult.Success(new JoiningWord()) :
-            TokenisationResult.Fail();
-    }
-}
-```
-
-This is just one of many parsers that use Regex, so it would make sense to make something that we can re-use that handles our Regex logic. We've got our OO hat on, so let's make a base class!
-
-```csharp
-public abstract class BaseRegexTokenParser : ITokenParser
-{
-    Regex regex;
-        
-    public BaseRegexTokenParser(string pattern) =>
-        regex = new Regex(pattern);
-
-    public TokenisationResult Tokenise(string token)
-    {
-        var match = regex.Match(token);
-        return match.Success ?
-            convertMatch(match) :
-            TokenisationResult.Fail();
-    }
-
-    protected abstract TokenisationResult convertMatch(Match match);
-}
-```
-
-Ok, great, now we have a base class parser that runs a regex check, and on failure breaks out, and on success runs the convert method. We can now implement our individual parsers that use regex over that, and we only need to implement our convertMatch function!
-
-```csharp
-public class RegexJoiningWordParser : BaseRegexTokenParser
-{
-    public RegexJoiningWordParser() 
-        : base(@"^[Tt]o$") { }
-
-    protected override TokenisationResult convertMatch(Match match) =>
-        TokenisationResult.Success(new JoiningWord());
-}
-```
-
-By now, your spider senses should be tingling. This route is the route of great pain, we're going to be creating a _looooot_ of classes that use this base class, and it feels like a trap. What about if we make it flexible by supplying a converter delegate?
-
-```csharp
-public class FlexibleRegexTokenParser : ITokenParser
-{
-    Regex _regex;
-    Func<Match, TokenisationResult> _converter;
-
-    // Takes a pattern and a delegate that converts a Regex.Match into a TokenisationResult.
-    public FlexibleRegexTokenParser(string pattern, Func<Match, TokenisationResult> converter)
-    {
-        _regex = new Regex(pattern);
-        _converter = converter;
-    }
-
-    public TokenisationResult Tokenise(string token)
-    {
-        var match = _regex.Match(token);
-        return match.Success ?
-            _converter(match) :
-            TokenisationResult.Fail();
-    }
-}
-```
-
-We don't need to make a new implementation each time, we've got something configurable.
-
-```csharp
-[Theory]
-[InlineData("To")]
-[InlineData("to")]
-public void FlexibleRegexTokenParser(string value)
-{
-    var parser = new FlexibleRegexTokenParser(
-        @"^[Tt]o$", 
-        match => TokenisationResult.Success(new JoiningWord()));
-
-    parser.IsMatch(value)
-        .Should().BeTrue();
-}
-```
-
-What we are doing now is using a delegate in the constructor to handle success, and if we think back to the beginning of the post, we talk about the ITokenParser being replacable with a delegate. So if we turn this interface into a delegate, and put the origional check inside a Regex check delegate...
-
-```csharp
-public delegate TokenisationResult TokenParser(string token);
-
-public static TokenParser FromRegex(string pattern, Func<Match, TokenisationResult> resolver)
-{
-    var regex = new Regex(pattern);
-    return (string token) =>
-    {
-        var match = regex.Match(token);
-
-        if (!match.Success)
-            return TokenisationResult.Fail();
-
-        return resolver(match);
-    };
-}
-```
-
-We can implement our whole parser in a static property, by calling a static method, no classes, no interfaces:
-
-```csharp
-public static TokenParser JoiningWord = Tokeniser
-    .FromRegex(@"^[Tt]o$", match =>
-        TokenisationResult.Success(new JoiningWord()));
-```
-
-### Well it's neat and all
-
-But what about the origional Monad composition? Well, the Tokenisation system is flat, the main benefit of the changes so far are that we don't have to implement any classes or interfaces and we've accepted functions as first class concepts. 
-What happens when we apply this to the IParser<T> implementations?
-
+Let's go back to OO thinking and start with one of our original IParser<T> implementations, IsToken:
 
 ```csharp
 public class IsToken<T> : IParser<T>
 {
-    public IsToken() { }
-
     public ParseResult<T> Parse(Position position)
     {
         return position.Current.Is<T>() ?
@@ -335,7 +284,7 @@ public class IsToken<T> : IParser<T>
 }
 ```
 
-What if we want to add a condition? We've got our OO hat on, so let's add a base class!
+What if we want to add a condition? We've got our OO hat on, so let's create a base class!
 
 ```csharp
 public abstract class IsTokenConditionBase<T> : IParser<T>
@@ -351,7 +300,7 @@ public abstract class IsTokenConditionBase<T> : IParser<T>
 }
 ```
 
-Now we've got a base class we can use to implement conditions, let's see what we can do with it.
+Now we've got a base class we can use to implement conditions, let's create a check for ints over a certain value.
 
 ```csharp
 public class NumberOverParser : IsTokenConditionBase<int>
@@ -366,7 +315,7 @@ public class NumberOverParser : IsTokenConditionBase<int>
 }
 ```
 
-By now, your spider senses should be tingling. This route is the route of great pain, we're going to be creating a _looooot_ of classes that use this base class, and it feels like a trap. What about if we make it flexible by supplying our check as a delegate?
+By now, your spider senses should be tingling. This route is the route to great pain, we're going to be creating a _looooot_ of either base classes, or classes that use base classes, and it feels like a trap. What about if we make it flexible by supplying our check as a delegate?
 
 ```csharp
 public class FlexibleIsTokenCondition<T> : IParser<T>
@@ -403,9 +352,7 @@ public void FlexibleParser(string text, bool succeed)
 }
 ```
 
-What we've just done here to make it more flexible is to put a function inside an object. But if we go back to earlier in this post, we talk about the Interfaces being replacable with a Function, if we make that change now, we will instead be putting a function inside a function, and that Monad composition into reach.
-
-Then we can implement each complete parser in a static method, no classes, no interfaces:
+What we've just done here to make it more flexible is to put a function inside an object. Going back to earlier in this post, we talk about the Interface being replaceable with a Function, if we make that change now, we will instead be putting a function inside a function, and that brings functional composition of functors and monads into reach.
 
 ```csharp
 public delegate ParseResult<T> Parser<T>(Position position);
@@ -425,9 +372,80 @@ public static Parser<T> IsToken<T>(Func<T, bool> check) => (Position position) =
 };
 ```
 
+And now we can implement each complete parser in a declarative static property, no interfaces, no classes, no inheritance, no new().
+        
+```csharp
+[Theory]
+[InlineData("1", false)]
+[InlineData("10", false)]
+[InlineData("101", true)]
+[InlineData("1000", true)]
+public void DelegateParser(string text, bool succeed)
+{
+    var tokens = Tokenise(text);
+    Parsers
+        .IsToken<int>(i => i > 100)
+        .Parse(tokens)
+        .Success
+        .Should().Be(succeed);
+}
+```
+
 ### Functional Parsers
 
-TODO: Stuff
+I've migrated all the original OO implementations of the [Parsers](https://github.com/TristanRhodes/TextProcessing/blob/master/TextProcessing/Functional/Parsers/Parsers.cs) and [Token Parsers](https://github.com/TristanRhodes/TextProcessing/blob/master/TextProcessing/Functional/Tokenisers/TokenParsers.cs).
+
+There are a couple of interesting additions worth noting. This FromRegex() method can be used to fluently build a Parser by combining a regex pattern and a function that processes the successful Regex Match.
+
+```csharp
+public static TokenParser FromRegex(string pattern, Func<Match, TokenisationResult> resolver)
+{
+    var regex = new Regex(pattern);
+    return (string token) =>
+    {
+        var match = regex.Match(token);
+
+        if (!match.Success)
+            return TokenisationResult.Fail();
+
+        return resolver(match);
+    };
+}
+```
+
+This enables us to separate the Regex match step from the actual processing of the successful match, and use them together via a combinator.
+
+```csharp
+public static TokenParser JoiningWord = Tokeniser
+    .FromRegex(@"^[Tt]o$", match =>
+        TokenisationResult.Success(new JoiningWord()));
+```
+
+### Monad Parsers vs Functor Parsers
+
+If we look back to the original Parser implementations and have a closer look at what they do, we'll see that they aren't all specifically Monads or Functors. I'm not confident enough to accurately categorize them, but have a think about where they sit relative to the functional concepts described above:
+
+* Is - Parser&lt;T&gt; IsToken&lt;T&gt;()
+* Then - Parser&lt;U&gt; Then&lt;T, U&gt;(Parser&lt;T&gt; first, Func&lt;T, Parser&lt;U&gt;&gt; second)
+* Or - Parser&lt;T&gt; Or&lt;T&gt;(params Parser&lt;T&gt;[] children)
+* Select - Parser&lt;U&gt; Select&lt;T, U&gt;(Parser&lt;T&gt; child, Func&lt;T, U&gt; converter)
+* ListOf - Parser&lt;List&lt;T&gt;&gt; ListOf&lt;T&gt;(Parser&lt;T&gt; child)
+* End - Parser&lt;T&gt; End&lt;T&gt;(Parser&lt;T&gt; child)
+
+### Functionally Parsing DayTime
+
+Now we can go back to the starting scenario from the previous post which was initially solved with the OO approach:
+
+```csharp
+public static IParser<DayTime> DayTimeParser =
+    new Then<DayOfWeek, DayTime>(
+        new IsToken<DayOfWeek>(),
+        dow => new Select<LocalTime, DayTime>(
+            new IsToken<LocalTime>(),
+            lt => new DayTime { Day = dow, LocalTime = lt }));
+```
+
+This can now be assembled with functions:
 
 ```csharp
 public static Parser<DayTime> WeekDayTimeParser =
@@ -437,6 +455,25 @@ public static Parser<DayTime> WeekDayTimeParser =
             Parsers.IsToken<LocalTime>(),
             lt => new DayTime { Day = dow, LocalTime = lt }));
 ```
+
+And we can apply our fluent API on top of this:
+
+```csharp
+public static Parser<DayTime> DayTimeFluentParser =
+    Parsers.IsToken<DayOfWeek>().Then(dow =>
+        Parsers.IsToken<LocalTime>().Select(lt =>
+            new DayTime { Day = dow, LocalTime = lt }));
+```
+
+It's interesting to note that when you apply the fluent API, both the OO and Functional code is now identical on the surface. The OO pattern is still packaging object => delegate => object => delegate, but at least it's tidy. In the new functional implementation it's just delegates all the way.
+
+### Code
+
+The code is all available here [here](https://github.com/TristanRhodes/TextProcessing) where I put together a bunch of different ways to do parsing. We've just covered the functional part, so check out the [Functional folder](https://github.com/TristanRhodes/TextProcessing/tree/master/TextProcessing/Functional).
+
+### Note
+
+I cheated in my last post and the "Object Orientated Approach" is actually a hybrid, but I find it helps bridge the gap between OO and functional concepts.
 
 ### Credits
 Header Image by <a href="https://pixabay.com/users/jackmac34-483877/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=970943">jacqueline macou</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=970943">Pixabay</a>
