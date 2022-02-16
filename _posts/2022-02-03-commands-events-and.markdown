@@ -2,7 +2,7 @@
 layout: post
 author: tristan-rhodes
 title: Commands, Events, And?
-excerpt: Three phase systems
+excerpt: Is there anything else?
 featured-image: /assets/commands-events-and/featured-image.jpg
 ---
 
@@ -56,7 +56,7 @@ Whatever choice we make we'll do based on our own context, not because of any sp
 
 ### Recipies
 
-Recipes look kind of like commands at first glance, but the key difference is that we're not running them now - they're a pre-defined set of steps we want to store as a template for use when running a command.
+Recipes look kind of like commands at first glance, but the key difference is that we're not running them now - they're a pre-defined set of steps we want to store as a template, and execute when we run a command.
 
 We may unpack those steps into individual commands to be run inside the context of the kitchen, and we may skip some steps depending on the context of the order (I'm not fond of mushrooms, so we'll leave them out), but as far as front of house is concerned these are invisible.
 
@@ -68,13 +68,13 @@ This is what's going on behind the scenes of our KitchenAPI:
 
 ### So what do we have here?
 
-We're looking at our system from the context of a Kitchen, and we can clearly see that our commands are Orders and our events are Dishes, and this is all we really want to expose as our KitchenAPI surface.
+We're looking at our system from the context of a Kitchen, and we can clearly see that our orders are commands and our dishes are events, and this is all we really want to expose as our KitchenAPI surface.
 
-But there are clearly things being passed around behind the scenes. These things can't be called commands/orders, as we are not representing intent. Nor are they events/dishes, as we are not indicating something has happened, what we receive as the payload _is_ the thing that is happening.
+But there are clearly things being passed around behind the scenes. These things can't be called commands/orders, as we are not representing intent. Nor are they events/dishes, as we are not indicating something has happened. What we receive as the payload _is_ the thing that is happening, and that thing can have side effects in its own right.
 
-So we have our ingredient deliveries, which we can think of as datapoints that represent changes in stock levels, and our menu updates, which we can think of as a feed of instruction documents.
+![Ingredient Delivery](/assets/commands-events-and/ingredient-delivery.drawio.png)
 
-What are they in a software context, these two seemingly unrelated concepts that aren't commands or events?
+So what are they in a software context, these concepts that aren't commands or events?
 
 ### Just a Message
 
@@ -92,7 +92,7 @@ And of course, [nothing new here](https://www.enterpriseintegrationpatterns.com/
 
 ### Bottom line
 
-We're all building first class command and event based systems, but when thinking about our command sources and event stores, and running our user action and event storming workshops, it's always worth bearing in mind that it's still valid to pass messages between systems that are neither commands nor events, and it's worth having room to express these concepts in your system designs.
+We're all building first class command and event based systems, but when thinking about our command sources and event stores, and while running our user action and event storming workshops, it's always worth bearing in mind that it's still valid to pass messages between systems that are neither commands nor events, and it's worth having room to express these concepts in your system designs.
  
 ### Finally
 
