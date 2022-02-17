@@ -66,25 +66,25 @@ This is what's going on behind the scenes of our KitchenAPI:
 
 ![Order, Kitchen, Dish, Back of house](/assets/commands-events-and/kitchen-commands-events-messages.drawio.png)
 
-### So what do we have here?
+### Wait, what's that?
 
-We're looking at our system from the context of a Kitchen, and we can clearly see that our orders are commands and our dishes are events, and this is all we really want to expose as our KitchenAPI surface.
+Our orders and dishes are all we want expose to our front of house - or in other words, our commands and events are all we want to surface from our KitchenAPI.
 
-But there are clearly things being passed around behind the scenes. These things can't be called commands/orders, as we are not representing intent. Nor are they events/dishes, as we are not indicating something has happened. What we receive as the payload _is_ the thing that is happening, and that thing can have side effects in its own right.
+But there are clearly other things happening behind the scenes, because guacamole doesn't appear out of thin air. These aren't commands/orders, as we are not representing intent. Nor are they events/dishes, as we are not indicating something has happened. What we receive as the payload _is_ the thing that is happening, and that thing can have side effects in its own right.
 
 ![Ingredient Delivery](/assets/commands-events-and/ingredient-delivery.drawio.png)
 
-So what are they in a software context, these concepts that aren't commands or events?
+What are they in a software context, these concepts that aren't commands or events?
 
-### Just a Message
+### Just a message
 
 They're just a plain message, a document, an inert packet of information or data that carries no context of its own. What the recipient does with the payload is up to them. A couple of real world examples:
 
-* DataPoints - Instead of Sensor information as a sequence of events they can be viewed as a series of sampled absolute values.
-* Frames - A video frame is not an event, but it is part of a feed that provides you with hours of entertainment.
-* Documents - The complete works of Shakespere is not an event. Unless someone performs it, it's just a payload of data.
-* Document Fragment - If a document is large and needs to be broken down, the parts of that document that are transmitted are not events either.
-* Workflow - A whole self-contained workflow can be a payload in its own right, and when processed may generate commands and events as part of its transformation, while not be either itself.
+* Data points: instead of sensor information as a sequence of events, they can be viewed as a series of sampled absolute values.
+* Frames: a video frame is not an event, but it is part of a feed that provides you with hours of entertainment.
+* Documents: the complete works of Shakespeare are not an event. Unless someone performs it, it's just a payload of data.
+* Document fragment: if a document is large and needs to be broken down, the parts of that document that are transmitted are not events.
+* Workflow: a self-contained workflow can be a payload in its own right, and when processed may generate commands and events as part of its transformation while not be either itself.
 
 ### Shoulders of giants
 
@@ -92,13 +92,13 @@ And of course, [nothing new here](https://www.enterpriseintegrationpatterns.com/
 
 ### Bottom line
 
-We're all building first class command and event based systems, but when thinking about our command sources and event stores, and while running our user action and event storming workshops, it's always worth bearing in mind that it's still valid to pass messages between systems that are neither commands nor events, and it's worth having room to express these concepts in your system designs.
+We're all building first-class command and event-based systems. When thinking about our command sources and event stores, and while running our user action and event storming workshops, it's always worth bearing in mind that it's still valid to pass messages between systems that are neither commands nor events - and it's worth having room to express these concepts in your system designs.
  
 ### Finally
 
 I'm hungry, so I'm going to run
 
-> kitchen exec prepare cheesburger-taco
+> kitchen exec prepare cheeseburger-taco
 
 Aaaand....
 
@@ -110,4 +110,4 @@ Aaaand....
 
 Art work - All stick man artwork is masterfully created by me in Draw.io... probably the wrong tool for the job.
 
-Photo by [Rodion Kutsaiev](https://www.pexels.com/@frostroomhead?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels) from [Pexels](https://www.pexels.com/photo/yellow-and-white-3-d-cube-9436715/?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels)
+Main photo by [Rodion Kutsaiev](https://www.pexels.com/@frostroomhead?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels) from [Pexels](https://www.pexels.com/photo/yellow-and-white-3-d-cube-9436715/?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels)
