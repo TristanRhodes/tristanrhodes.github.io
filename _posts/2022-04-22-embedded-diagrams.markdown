@@ -29,11 +29,15 @@ Dump the diagrams somewhere publicly accessible, I'm using a [Diagrams repo](htt
 
 Open your diagram and go to File > Embed > HTML (or an IFrame, but I found you have more control with the HTML side).
 
-// Image
+<img src="/assets/embedded-diagrams/export-html.png" alt="Export Html" width="60%"/>
 
-And dump the link into your HTML / markdown.
+And dump the link / html into your HTML / markdown.
 
 <p align="center"><iframe src="https://giphy.com/embed/Ri7d8I18cto2jufOKc" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/morphin-marvel-deadpool-superhero-Ri7d8I18cto2jufOKc">via GIPHY</a></p></p>
+
+## Caveat
+
+I still haven't figured out how to style them properly :)
 
 ### Credit
 
