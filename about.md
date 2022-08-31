@@ -6,8 +6,10 @@ permalink: /about/
 
 ## About
 
-I'm Tristan, a solid principle engineer with broad experience in product and business strategy, and a proven track record of building resilient, high volume, high throughput, low latency systems. 
+I'm Tristan, a solid principle engineer with broad exposure to a wide range of business practices. I bring over 15 years of experience in application design, distributed systems, problems of scale, and data modeling. 
 
-I bring over a decade of experience leading teams both local and remote, on a variety of large and small systems and have run teams that handled the design, implementation and ongoing maintenance of distributed systems, key algorithms and business critical infrastructure. 
+I have lead teams composed of local and remote engineers that have handled the design, implementation and ongoing maintenance of distributed systems, key algorithms and business critical infrastructure. 
+
+I enjoy reading about tech, writing about tech, playing with tech, building tech, and messing around with containers in the cloud.
 
 This is my blog. There are many like it. This one is mine.
