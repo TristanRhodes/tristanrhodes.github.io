@@ -10,6 +10,4 @@ I'm Tristan, a solid principle engineer with broad exposure to a wide range of b
 
 I have lead teams composed of local and remote engineers that have handled the design, implementation and ongoing maintenance of distributed systems, key algorithms and business critical infrastructure. 
 
-I enjoy reading about tech, writing about tech, playing with tech, building tech, and messing around with containers in the cloud.
-
 This is my blog. There are many like it. This one is mine.
