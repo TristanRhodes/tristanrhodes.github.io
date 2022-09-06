@@ -8,9 +8,12 @@ permalink: /packages/
 
 This is a list of software, packages and images that I find I use regularly. It's still a work in progress, and by no means complete.
 
-## Dev Environment
+## Dev Tools
+* [Visual Studio](https://visualstudio.microsoft.com/) - My main IDE for .net.
+* [VS Code](https://visualstudio.microsoft.com/) - The other IDE.
 * [NCrunch](https://www.ncrunch.net/) - Because tests while you type rocks.
 * [Specflow](https://specflow.org/) - BDD testing framework.
+* [Jekyll](https://jekyllrb.com/) - Ruby based blog engine.
 
 ## DotNet Packages
 
@@ -23,18 +26,20 @@ This is a list of software, packages and images that I find I use regularly. It'
 ### Resilience
 * [Polly](http://www.thepollyproject.org/) - Configure retry policies.
 
-### Text
+### Text Processing
 * [Sprache](https://github.com/sprache/Sprache) - Scannerless parsing library for turning text into objects.
 
 ### Observability
 * [Serilog](https://serilog.net/) - Logging library with configurable sinks.
-* [Reactive Extensions](https://github.com/dotnet/reactive) - Composeable, observable streams.
+* [Reactive Extensions](https://github.com/dotnet/reactive) - Composable, observable streams.
 
 ### Time and Space
 * [NodaTime](https://nodatime.org/) - Alternative Date/Time library. LocalTime, TimeZones, Instants, Durations and other useful primitives and calculations.
 * [NetTopologySuite](https://github.com/NetTopologySuite/NetTopologySuite) - GIS mapping library.
 
 ### Storage / Serialization
+* [Dapper](https://github.com/DapperLib/Dapper) - Ultra lightweight ORM from StackOverflow.
+* [DbUp](https://dbup.github.io/) - Database setup and migration tool.
 * [Newtonsoft.Json](https://www.newtonsoft.com/json) - An old classic, but not so relevant now it's integrated into netcore.
 
 ## Docker Images
