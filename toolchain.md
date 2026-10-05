@@ -8,6 +8,14 @@ permalink: /toolchain/
 
 This is a list of services, software, packages and images that I have experience with. It's still a work in progress, and the list is by no means complete.
 
+## AI Tooling
+* [Llama.cpp](https://github.com/ggml-org/llama.cpp) - Local LLM inference engine
+* [LM Studio](https://lmstudio.ai/) - Local LLM management and UI
+* Frontier Models - Anthropic: Sonnet / Fable / Opus
+* Local Models - Qwen 27b [3.6](https://huggingface.co/Qwen/Qwen3.6-27B) / [3.8](https://huggingface.co/Qwen/Qwen3.8-27B) 
+* Coding Harnesses - [Claude Code](https://claude.com/product/claude-code) / [Pi](https://pi.dev/)
+* [Agent Sandbox](https://github.com/pragmatic-systems/Pragmatic.AgentSandbox) - Prison for the bot
+
 ## AWS
 * [Lambdas](https://aws.amazon.com/lambda/) - Serverless scaley woo-woo from Amazon
 * [DynamoDb](https://aws.amazon.com/dynamodb/) - Partitioned, hyper scale structured document store
@@ -33,7 +41,7 @@ This is a list of services, software, packages and images that I have experience
 * [DynamoDb](https://aws.amazon.com/dynamodb/)
 
 ## Queues and Streams
-* [Rabbit MQ](https://octopus.com/) - Queues and topic server.
+* [Rabbit MQ](https://www.rabbitmq.com/) - Queues and topic server.
 * [Service Bus](https://azure.microsoft.com/en-gb/products/service-bus/)
 * [Event Hubs](https://learn.microsoft.com/en-us/azure/event-hubs/)
 * [Sqs](https://aws.amazon.com/sqs/)
