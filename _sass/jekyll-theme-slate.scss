@@ -519,6 +519,8 @@ Nav Bar
 .nav-bar {
     list-style-type: none;
     display: flex;
+    flex-wrap: wrap;
+    row-gap: 6px;
     margin-bottom: 0px;
     max-width: 640px;
     padding: 0px;
@@ -527,15 +529,67 @@ Nav Bar
 .nav-bar-item {
     margin: 5px;
     padding-right: 3px;
+    position: relative;
     a {
         font-size: 18px;
         color: #FFFFFF;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
 
         &:hover {
             text-decoration: none;
             color: #0090ff;
         }
     }
+}
+
+.nav-icon {
+    box-sizing: border-box;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    padding: 3px;
+    border: none;
+    box-shadow: none;
+    background: #FFFFFF;
+    border-radius: 4px;
+}
+
+.nav-external-arrow {
+    font-size: 14px;
+}
+
+.nav-caret {
+    font-size: 12px;
+}
+
+.nav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 130px;
+    margin: 0 0;
+    padding: 6px 0;
+    list-style: none;
+    background: #212121;
+    border: 1px solid #111;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    z-index: 10;
+
+    li a {
+        display: block;
+        font-size: 16px;
+        padding: 5px 14px;
+        white-space: nowrap;
+    }
+}
+
+.nav-bar-item.has-dropdown:hover .nav-dropdown,
+.nav-bar-item.has-dropdown:focus-within .nav-dropdown,
+.nav-bar-item.has-dropdown.open .nav-dropdown {
+    display: block;
 }
 
 

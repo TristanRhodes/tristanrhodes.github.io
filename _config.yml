@@ -63,3 +63,14 @@ plugins:
 
 show_excerpts: true
 owner_name: Tristan Rhodes
+
+# Repo tooling and meta files — never publish these as blog pages.
+exclude:
+  - .dockerignore
+  - .gitattributes
+  - .gitignore
+  - AGENTS.md
+  - Dockerfile
+  - README.md
+  - PlannedPosts.md
+  - docker-compose.yml

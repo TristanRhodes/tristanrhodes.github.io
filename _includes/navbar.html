@@ -1,7 +1,37 @@
 <div class="nav-bar-wrapper inner">
-    <ul class="nav-bar">
-        <li class="nav-bar-item"><a href="/">Home</a></li>
-        <li class="nav-bar-item"><a href="/toolchain">Toolchain</a></li>
-        <li class="nav-bar-item"><a href="/about">About</a></li>
-    </ul>
+  <ul class="nav-bar">
+    <li class="nav-bar-item"><a href="/">Home</a></li>
+    <li class="nav-bar-item"><a href="/toolchain">Toolchain</a></li>
+    <li class="nav-bar-item"><a href="/ai-policy">AI Policy</a></li>
+    <li class="nav-bar-item has-dropdown">
+      <a href="/about">About <span class="nav-caret" aria-hidden="true">▾</span></a>
+      <ul class="nav-dropdown">
+        <li><a href="/hobbies">Hobbies</a></li>
+        <li><a href="/quotes">Quotes</a></li>
+      </ul>
+    </li>
+    <li class="nav-bar-item"><a href="https://pragmatic-systems.co.uk/" target="_blank" rel="noopener"><img class="nav-icon" src="{{ '/images/pragmatic-systems-icon.png' | relative_url }}" alt="Pragmatic Systems">Pragmatic Systems <span class="nav-external-arrow" aria-hidden="true">↗</span></a></li>
+  </ul>
 </div>
+<script>
+(function () {
+    // On touch devices there is no hover: first tap on About opens the
+    // dropdown, second tap navigates. Tapping elsewhere closes it.
+    if (!window.matchMedia('(hover: none)').matches) return;
+    var item = document.querySelector('.nav-bar-item.has-dropdown');
+    if (!item) return;
+    var link = item.querySelector(':scope > a');
+    link.setAttribute('aria-expanded', 'false');
+    link.addEventListener('click', function (e) {
+        if (item.classList.contains('open')) return; // second tap: navigate
+        e.preventDefault();
+        item.classList.add('open');
+        link.setAttribute('aria-expanded', 'true');
+    });
+    document.addEventListener('click', function (e) {
+        if (item.contains(e.target)) return;
+        item.classList.remove('open');
+        link.setAttribute('aria-expanded', 'false');
+    });
+})();
+</script>
