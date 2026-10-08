@@ -529,6 +529,7 @@ Nav Bar
 .nav-bar-item {
     margin: 5px;
     padding-right: 3px;
+    position: relative;
     a {
         font-size: 18px;
         color: #FFFFFF;
@@ -557,6 +558,38 @@ Nav Bar
 
 .nav-external-arrow {
     font-size: 14px;
+}
+
+.nav-caret {
+    font-size: 12px;
+}
+
+.nav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 130px;
+    margin: 4px 0 0;
+    padding: 6px 0;
+    list-style: none;
+    background: #212121;
+    border: 1px solid #111;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    z-index: 10;
+
+    li a {
+        display: block;
+        font-size: 16px;
+        padding: 5px 14px;
+        white-space: nowrap;
+    }
+}
+
+.nav-bar-item.has-dropdown:hover .nav-dropdown,
+.nav-bar-item.has-dropdown:focus-within .nav-dropdown,
+.nav-bar-item.has-dropdown.open .nav-dropdown {
+    display: block;
 }
 
 
