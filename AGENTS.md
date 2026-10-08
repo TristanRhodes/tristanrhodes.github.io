@@ -20,3 +20,9 @@ Jekyll blog published to GitHub Pages at https://www.tristan-rhodes.co.uk.
 - New post = `_posts/YYYY-MM-DD-slug.markdown` plus images under `assets/<slug>/`; keep the filename date in sync with the front matter.
 - Keep `Gemfile.lock` as-is (pinned to the Ruby 2.x github-pages set).
 - `PlannedPosts.md` is an internal note, not published.
+
+## Authoring rules
+
+- Generate scaffolding only: file layout, front matter, asset wiring.
+- When creating new posts, leave `title`, `excerpt`, and body as placeholders for the author.
+- When reviewing copy, flag issues (clarity, contradictions, technical inaccuracy) but do not suggest rewordings, new content or technical direction.
