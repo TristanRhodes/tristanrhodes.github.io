@@ -34,7 +34,7 @@ This is a list of services, software, packages and images that I have experience
 
 ## Storage Providers
 * [Sql Server](https://www.microsoft.com/en-gb/sql-server/sql-server-2022) - _The_ microsoft database.
-* [Postgres](https://www.postgresql.org/) - Open source DB, has really good geospacial support and integration with GIS.
+* [Postgres](https://www.postgresql.org/) - Open source DB, has really good geospatial support and integration with GIS.
 * [MySql](https://www.mysql.com/) - Now owned by Oracle.
 * [ElasticSearch](https://www.elastic.co/elasticsearch/) - Scaleable, indexed document store.
 * [CosmosDb](https://azure.microsoft.com/en-gb/products/cosmos-db/)
