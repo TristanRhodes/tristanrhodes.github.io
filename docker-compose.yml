@@ -1,0 +1,10 @@
+services:
+  blog:
+    build: .
+    container_name: tristan-blog
+    ports:
+      - "4000:4000"
+    # Mount this folder over the baked-in copy, so the container sees
+    # live files (and its .git) instead of the build-time snapshot.
+    volumes:
+      - .:/app
