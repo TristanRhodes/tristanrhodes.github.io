@@ -12,13 +12,8 @@ permalink: /hobbies/
 * [XCOM](https://store.steampowered.com/app/200510/XCOM_Enemy_Unknown/) / [XCOM 2](https://store.steampowered.com/app/268500/XCOM_2/) / [ZCOM](https://store.steampowered.com/app/2075800/STAR_WARS_Zero_Company/) - All the turn based game itch scratching.
 
 ### Miniature Painting
+* I've got a large collection of HeroQuest / Space Crusade and other minis I'm working through. Keeps me real and grounded. Pictures pending.
 
-TODO
-
-### Drums
-
-TODO
-
-### Boxing
-
-TODO
+### Others
+* Boxing - Been trading leather with people of all sizes and levels for >20 years, but I'm not as fast as I used to be.
+* Drums - A couple of years of another form of percussion.
