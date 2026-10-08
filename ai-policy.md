@@ -21,9 +21,11 @@ I will not use the bot to speak in my voice.
 
 ## AI Tooling
 
-I run local models with a full private tool chain, supporting Qwen 3.6 @ 35tps and 3.8 @ 45tps with a context window of 128k, this handles day to day development tasks across multi-repo work.
+I run local models with a full private tool chain, supporting Qwen 3.6 @ 35tps and 3.8 @ 45tps (all performance improvements negated by waaaay too much talking) with a context window of 128k, this handles day to day development tasks across multi-repo work.
 
 I maintain my own [Agent Sandbox](https://github.com/pragmatic-systems/Pragmatic.AgentSandbox) with locked down permissions and my own development tool chain baked in running the [pi.dev](https://pi.dev/) agent harness.
+
+All data, plans and client information remain local.
 
 ### Why
 
