@@ -6,13 +6,17 @@ permalink: /ai-policy/
 
 ## AI Policy
 
-Development: AI-assisted analysis, boilerplate and refactoring.
-Documentation: AI-generated readmes and auto-docs with manual review / edits.
-Articles: Blog posts and articles are my own words; AI is used for summaries and review.
-Communication: All human.
+* Development: AI-assisted analysis, boilerplate, refactoring, rapid POCs.
+* Documentation: AI-generated readmes and auto-docs with manual review / edits.
+* Articles: Blog posts and articles are my own words; AI is used for summaries and review.
+* Communication: All human.
+
+I own what I build.
 
 The bot does not speak or decide for me.
+
 If an agent is acting on my behalf, this will be declared.
+
 I will not use the bot to speak in my voice.
 
 ## AI Tooling
@@ -23,10 +27,6 @@ I maintain my own [Agent Sandbox](https://github.com/pragmatic-systems/Pragmatic
 
 ### Why
 
-I feel that in the current world, we can't avoid AI, but we should also avoid abdicating ourselves to it.
-And in the rush to remove all friction for maximum speed, we should remember that friction still serves a purpose, and with great speed comes more accountability and responsibility.
+I feel that in the current world, we can't avoid AI, but we should also avoid abdicating ourselves to it. So in the rush to remove all friction for maximum speed, we should remember that friction still serves a purpose, and with speed comes increased accountability and responsibility.
 
-In order to seek out and collaborate with other like minded people, we can only do this if we know where we sit ourselves.
-
-So this is my AI policy, and how I define my relationship with the bot tools, my thoughts, and what I can bring to the table.
-
+In order to seek out and collaborate with other like minded people, we can only do this if we know where we sit ourselves. So this is my AI policy, and how I define my relationship with the bot tools, my thoughts, and what I bring to the table.
