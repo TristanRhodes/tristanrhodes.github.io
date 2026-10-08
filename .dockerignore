@@ -1,0 +1,11 @@
+.git
+.vs
+_site
+.sass-cache
+.jekyll-cache
+.bundle
+.jekyll-metadata
+Dockerfile
+.dockerignore
+PlannedPosts.md
+toolchain.md
