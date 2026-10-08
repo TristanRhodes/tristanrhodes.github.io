@@ -6,8 +6,14 @@ permalink: /about/
 
 ## About
 
-I'm Tristan, a solid principle engineer with broad exposure to a wide range of business practices. I bring over 15 years of experience in application design, distributed systems, problems of scale, and data modeling. 
+Pragmatic, full-stack engineer with 15+ years of success designing, building, and continuously improving distributed systems across logistics, payments, smart city and e-commerce platforms, taking products from zero to production at scale.
 
-I have lead teams composed of local and remote engineers that have handled the design, implementation and ongoing maintenance of distributed systems, key algorithms and business critical infrastructure. 
+Collaborative, people-focused team builder focused on coaching graduates and senior engineers alike, growing happy, high-engagement teams through mentoring, post-mortems, and close partnership with product, security, and legal colleagues across business.
+
+Simplicity-first, methodical technical lead baking checks and balances into every system, pairing robust testing, observability and continuous integration with clean, stable architecture any squad can own from day one.
 
 This is my blog. There are many like it. This one is mine.
+
+## Pragmatic Systems
+
+My github org - [Pragmatic Systems](https://pragmatic-systems.co.uk/) - Where I build my things.
