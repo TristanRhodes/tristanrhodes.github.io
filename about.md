@@ -14,6 +14,6 @@ Simplicity-first, methodical technical lead baking checks and balances into ever
 
 This is my blog. There are many like it. This one is mine.
 
-## Pragmatic Systems
+### Pragmatic Systems
 
 My github org - [Pragmatic Systems](https://pragmatic-systems.co.uk/) - Where I build my things.

@@ -21,7 +21,7 @@ I will not use the bot to speak in my voice.
 
 A pen is still a valid thinking aid.
 
-## AI Tooling
+### AI Tooling
 
 I run local models with a full private tool chain, supporting Qwen 3.6 @ 35tok/s and 3.8 @ 45tok/s (all performance improvements negated by waaaay too much talking) with a context window of 128k, this handles day to day development tasks across multi-repo work.
 
