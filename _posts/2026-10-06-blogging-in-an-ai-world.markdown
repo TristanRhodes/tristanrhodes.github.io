@@ -8,7 +8,7 @@ featured-image: /assets/blogging-in-an-ai-world/featured-image.jpg
 
 ## AI and I
 
-I come from a strange background with AI. My first program was a chess computer, and I've been in/around the space longer than I have been in industry. In that time, I've seen technologies that were once cutting edge AI become commoditised, turn into brands or products, and cease to be considered AI (Google Maps navigation, OCR).
+I come from a strange background with AI. My first program was a chess computer, and I've been in/around the space longer than I have been in industry. In that time, I've seen technologies that were once cutting edge AI become commoditised, turn into brands or products, and cease to be considered AI (Google Maps navigation, Google Translate, Grammarly).
 
 My early experience in industry was skewed by the tail end of the last [AI Winter](https://en.wikipedia.org/wiki/AI_winter), and was an era where people had to hide their usage of AI in order to secure funding for projects.
 
@@ -18,14 +18,15 @@ At some point "We use LLMs in our pipeline" will be the same as declaring that y
 
 Until that time comes - we as engineers are all figuring out our place in the world, and what our relationship with our tools is going to look like.
 
-I have tried to define an AI policy that reflects my values and will be workable in the real world, published [here](/ai-policy).
+I have shaped an AI policy that reflects my values and should be workable in the real world, published [here](/ai-policy).
 
 ## How I use AI
 
 * A simple Agents.md for common rules works well for most code bases - avoid bloat.
 * Keep the skills files to a minimum - Only add core operations.
-* Keep your context small and focused on task - My top two commands are `/new` and `esc`.
-* A code base should be navigable by humans. As a side effect, this will also be navigable by bots. We still need to pass audit - our investors will want to see what is being done.
+* Keep the context small and focused on task - My top two commands are `/new` and `esc`.
+* Steering is key - watch it run, provide guidance into the dialogue stream.
+* A code base should be navigable by humans. As a side effect, this will also be navigable by bots. We still need to pass audit - investors will want to see what is being done.
 * Code tags are great for the bot to grep/discover. These are signposts in your code base. E.g. //BOT: Extend here for additional jobs.
 
 ## Test and Verify
@@ -41,15 +42,8 @@ In an age of AI, rapid development and equally rapid change - having robust test
 Sure - I could make a content factory loop, schedule a job running a bot, it's not a complicated process:
 
 * Schedule a job
-* Generate 5 ideas based off current tech trends for a persona description (Eccentric bald engineer who likes hats)
-* Pick the best idea and generate a detailed post from the perspective of a principal engineer.
-* Push to github.
-
-Hell - you can do a full youtube content feed:
-
-* Schedule a job
-* Generate 5 ideas based off current trends for a text persona description.
-* Pick the best idea and generate an extended script following the persona.
+* Generate 5 subject ideas based off current tech trends for a persona (Eccentric bald lead engineer who likes hats)
+* Pick the best idea and generate an extended script of the subject following the persona.
 * Generate an audio track of the script from a sample voice pack.
 * Generate a video from the script/audio using an image asset pack.
 * Publish to YouTube once a week.
