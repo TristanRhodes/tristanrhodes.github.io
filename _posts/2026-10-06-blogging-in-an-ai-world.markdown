@@ -28,6 +28,7 @@ I have shaped an AI policy that reflects my values and should be workable in the
 * Steering is key - watch it run, provide guidance into the dialogue stream.
 * A code base should be navigable by humans. As a side effect, this will also be navigable by bots. We still need to pass audit - investors will want to see what is being done.
 * Code tags are great for the bot to grep/discover. These are signposts in your code base. E.g. //BOT: Extend here for additional jobs.
+* Sometimes I still write code by hand!! Refactor a bit, make a commit, run "Apply last commit to all classes implementing IDocumentFactory." *poof* magic.
 
 ## Test and Verify
 
