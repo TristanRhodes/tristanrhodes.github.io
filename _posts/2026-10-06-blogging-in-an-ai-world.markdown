@@ -54,3 +54,7 @@ Content is easy, it's become noise. Now noise is easy, signal is hard. So mostly
 I will speak with my own voice and aim to be a home of something genuine, and maybe a signal in the sea of noise.
 
 I'm keeping my old blog, and the old format, although I'll work on modernising the stack, as it provides history and content from the "before times" and a bridge into the modern AI era.
+
+### Credits
+I have always credited the photographer / artist behind images I used on my blog - but in the 4 years since my last post, finding anything made by a human has become... challenging.
+Header photo by [Ryutaro Tsukata](https://www.pexels.com/photo/man-writing-with-pen-on-paper-6249385/)
