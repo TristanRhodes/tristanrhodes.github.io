@@ -12,21 +12,21 @@ I come from a strange background with AI. My first program was a chess computer,
 
 My early experience in industry was skewed by the tail end of the last [AI Winter](https://en.wikipedia.org/wiki/AI_winter), and was an era where people had to hide their usage of AI in order to secure funding for projects.
 
-I'm familiar with the cycle of excitement and overinvestment, followed by the pullback of funding and I see the current time as just another phase in the AI history cycle. In the words of AC/DC, Money Talks, Everything else Walks - and once investors say they don't want AI, then that will be the driver. For now - Money says AI, and that's what we're going to do.
+I'm familiar with the cycle of excitement and overinvestment, followed by the pullback of funding and I see the current time as just another phase in the AI history cycle. In the words of AC/DC, `Money talks, everything else walks` - and once investors say they don't want AI, then that will be the driver. For now - Money says AI, and that's what we're going to do.
 
-At some point "We use LLMs in our Pipeline" will be the same as declaring that you use Containers, Postgres or have CI/CD. The thing that matters will be what you do with it, and whether it is stable and secure.
+At some point "We use LLMs in our pipeline" will be the same as declaring that you use containers, Postgres or have CI/CD. The thing that matters will be what you do with it, and whether it is stable and secure.
 
 Until that time comes - we as engineers are all figuring out our place in the world, and what our relationship with our tools is going to look like.
 
-I have tried to define an AI Policy that reflects my values and will be workable in the real world, published [here](/ai-policy).
+I have tried to define an AI policy that reflects my values and will be workable in the real world, published [here](/ai-policy).
 
-## How I use AI - light touch.
+## How I use AI
 
 * A simple Agents.md for common rules works well for most code bases - avoid bloat.
 * Keep the skills files to a minimum - Only add core operations.
 * Keep your context small and focused on task - My top two commands are `/new` and `esc`.
-* A code base should be navigable by Humans. As a side effect, this will also be navigable by bots. We still need to pass audit - our investors will want to see what is being done.
-* Code tags are great for the bot to Grep/Discover. These are signposts in your code base. E.g. //BOT: Extend here for additional jobs.
+* A code base should be navigable by humans. As a side effect, this will also be navigable by bots. We still need to pass audit - our investors will want to see what is being done.
+* Code tags are great for the bot to grep/discover. These are signposts in your code base. E.g. //BOT: Extend here for additional jobs.
 
 ## Test and Verify
 
