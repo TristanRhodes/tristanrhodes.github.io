@@ -6,6 +6,10 @@ excerpt: Ok... hear me out.
 featured-image: /assets/llms-as-pathfinding-through-text/featured-image.jpg
 ---
 
+In my previous post [here], I mentioned I had a Chess background. I've also got a long standing passion for Pathfinding (link) and I've covered NLP / Text processing and Tokenization in depth (3x links) for over half a decade.
+
+This set me up with two concepts, firstly exploring a domain and prioritising available moves/actions, secondly tokenizing multiple words into concepts based on local context. These two concepts underpin a lot of LLM behaviour and I'm going to try and lay them on top of each other conceptually.
+
 Notes:
 Have a chess and pathfinding background, combined with NLP / Text Processing.
 Feel like we can frame LLM's as pathfinding through text.
@@ -15,7 +19,7 @@ Bobby had a big/small/scaly/furry pet dog/cat/rabbit/snake - Show pathing exampl
 Depending on different adjectives a story route would run differently for big or scaly, eg: bobby had a _big_ dog or bobby had a _scaly_ snake, then selects what comes next based off the adjectives. The story direction involving the pet will impacted by the adjective.
 
 Concept:
-A* / Dyiskas Algorythm looks at the following:
+A* / Dyiskas Algorythm/Chess Domain Exploration looks at the following:
 * Where are we? This is the starting point.
 * Where do we need to go? What is the end point.
 * Where can I move? What can be done.
@@ -23,12 +27,12 @@ A* / Dyiskas Algorythm looks at the following:
 * Apply the best one.
 * Loop until you run out of potential options.
 
-Layer this concept onto text generation.
-
 Differences:
-* LLMs are more of a Markov Chain mechanism.
+* LLMs are more like a Markov (not a chain) process based off the entire previous state.
+* Tensors in LLMs indicate next sequence probability, based off the cumulative weights of the preceding tokens.
 * LLMs don't have a destination, they just assign increasing weight to "end of converstaion" token.
 * LLMs have a direction derived from the weights in the context/prompt.
+* LLMs don't back track or un-wind the search stack.
 * We're not exploring a "map", more of a concept space.
 
 Apertures / Doorways:
@@ -39,7 +43,7 @@ Poisoning Data:
 * Seed source data with nonsense.
 * Floods training data with contradictory / shuffled / incoherant samples.
 * Quality drops, output becomes incoherant.
-* In pathfinding the algorythm would be lost. The signposts all point to "anywhere".
+* In pathfinding the algorythm would be lost. The signpost points in random directions, with the relevant ones being drowned out / obscured.
 * Link to anthropic poison paper. https://www.anthropic.com/research/small-samples-poison
 
 Trigger Training:
