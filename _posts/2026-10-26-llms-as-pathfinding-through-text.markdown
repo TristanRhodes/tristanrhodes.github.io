@@ -6,7 +6,7 @@ excerpt: Ok... hear me out.
 featured-image: /assets/llms-as-pathfinding-through-text/featured-image.jpg
 ---
 
-In my previous post [here], I mentioned I had a Chess background. I've also got a long standing passion for Pathfinding (link) and I've covered NLP / Text processing and Tokenization in depth (3x links) for over half a decade.
+In my [previous post](blogging-in-an-ai-world.html), I mentioned my first program was a Chess game. I've also got a long standing passion for [Pathfinding projects](https://github.com/pragmatic-systems/Pragmatic.Playground.Pathfinding) and I've covered [NLP / Text processing and Tokenization in depth](https://github.com/pragmatic-systems/Pragmatic.Playground.Parsing) for over half a decade.
 
 This set me up with two concepts, firstly exploring a domain and prioritising available moves/actions, secondly tokenizing words/phrases into concepts based on local context.
 
@@ -15,7 +15,7 @@ These two concepts underpin a lot of LLM behaviour and I'm going to try and lay 
 ## Exploration
 Let's start with exploration algorythms. The processes and loops that handle exploring a given domain, A*, Dijkstra's algorythm, chess move calculation, graph search.
 
-[Chess Diagram]
+![Chess diagram](/assets/llms-as-pathfinding-through-text/chess-boards.png)
 
 * Starting point: Where are we? Current location, current board state, current node, llm context.
 * Valid moves: What can we do? Which adjacent squares are open? What moves are valid? What edges can I cross? What are the possible next words?
@@ -41,7 +41,7 @@ For LLMs the Heuristic is intrinsic to its training, but driven by the initial p
 
 At the simplest level, a tensor describes the association between two or more concepts. LLMs use huge multi-dimensional arrays describing the association between multiple concepts at the same time, and these are the tensors for running their calculations.
 
-[Diagram - 3d tensor arrow over 3d vector space]
+![3d tensor arrow over 3d vector space](/assets/llms-as-pathfinding-through-text/Components_stress_tensor.svg)
 
 The supplied context and generated response feed into the tensors and this in turn is used to determine the weight of the next token/word, which is then selected based on the temperature calculations and other parameters of LLMs.
 
@@ -51,7 +51,7 @@ Use real examples - Tie these to Bobby pet story example.
 > this token appeared before that token
 
 Your tensors being loaded after recieving your prompt.
-[Gif - Phalanx Spears]
+![Phalanx spears](/assets/llms-as-pathfinding-through-text/phalanx.gif)
 
 Notes:
 * LLMs are similar to a Markov process based off the entire state of the full context window.
@@ -94,8 +94,34 @@ The bot repeatedly raised Attention as a concept and while it doesn't come from 
 Normal exploration algorythms look at adjacency and rate the move based on the cost of transition and value of the target state. LLMs can see the entire previous path (the context text) and the attention mechanism enables it to selectively focus on different areas of that text body. It's like it has complete map visibility when making a move decision.
 
 ## Apertures / Doorways
-* LLMS have closing phrases that narrow options and opening phrases that expand possible options. "But wait.." or "Let me think deeply..." set up another sequence chain, rather than closing the conversation.
-* These can be viewed as doorways in pathfinding. Everything converges on an "aperture" and once there you have to "play" an expanding phrase to open the door and expand into other areas.
+
+As LLMs follow their path through text, it can use phrases to open or close a sequence - these phrases can either narrow or open future options.
+
+Closing phrases (reasoning => response generation):
+* I'll write the response as a sumamry
+* Let me structure my review clearly
+
+Closing phrases (end of response):
+* Final Verdict: [summary]
+* Recommendation: [action plan]
+
+Opening phrases:
+* But wait...
+* Let me think deeply...
+
+You can see this behaviour if you look at the reasoning logs and follow the chain. It'll spend some time exploring a concept, play around with some hypotheses and reach an end point for a given "thought". At this point it can either move to the next phase, wrap up, or explore something else.
+
+These phrases can be viewed as doorways in pathfinding. Everything converges on an "aperture" and once there you have to "play" an expanding phrase to open the door and expand into other areas, otherwise the sequence stops.
+
+![Mysterious door](/assets/llms-as-pathfinding-through-text/door-placeholder.jpg)
+
+Here we are converging on a dead end and we would expect to generate an EOS token in this situation, or move from the Reasoning to the Response Generating phase of output.
+
+![Path converging on a closed doorway](/assets/llms-as-pathfinding-through-text/Closed%20Door.png)
+
+But wait... (Open the door)
+
+![Doorway opening to new area](/assets/llms-as-pathfinding-through-text/Open%20Door.png)
 
 ## Ambiguity
 I don't run a super computer, so I'm limited to a 4 quant integer model for local development, that means that my numerical resolution is 0-15 with integer level precision. A full 16 bit floating point model has a resolution of ~0.000061 to 65,504 with the full range of floating point precision.
