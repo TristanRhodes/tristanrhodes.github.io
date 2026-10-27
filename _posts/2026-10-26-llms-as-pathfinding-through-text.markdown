@@ -15,6 +15,8 @@ These two concepts underpin a lot of LLM behaviour and I'm going to try and lay 
 ## Exploration
 Let's start with exploration algorythms. The processes and loops that handle exploring a given domain, A*, Dijkstra's algorythm, chess move calculation, graph search.
 
+[Chess Diagram]
+
 * Starting point: Where are we? Current location, current board state, current node, llm context.
 * Valid moves: What can we do? Which adjacent squares are open? What moves are valid? What edges can I cross? What are the possible next words?
 * Move selection: Which do we chose? What square is closest to my goal? Which move scores highest? Which tokens/words weigh the most?
@@ -31,13 +33,25 @@ How we do selection in Exploration algos vs Token Prediction in LLMs.
 
 In an exploration algorythm the heuristic used to weight up the available options and prioritise what moves to apply and in what order.
 
-For LLMs the Heuristic is driven by the initial prompt. A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a clear end condition. A vague prompt provides no clear objective - "Tell me something interesting" could produce anything.
+[Diagram - Selecting best moves]
+
+For LLMs the Heuristic is intrinsic to its training, but driven by the initial prompt. A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a clear end condition. A vague prompt provides no clear objective - "Tell me something interesting" could produce anything.
+
+[Diagram - Selecting next word]
 
 At the simplest level, a tensor describes the association between two or more concepts. LLMs use huge multi-dimensional arrays describing the association between multiple concepts at the same time, and these are the tensors for running their calculations.
 
+[Diagram - 3d tensor arrow over 3d vector space]
+
 The supplied context and generated response feed into the tensors and this in turn is used to determine the weight of the next token/word, which is then selected based on the temperature calculations and other parameters of LLMs.
 
-Bot example: "this token is the subject of that verb" and "this token is semantically near that noun" and "this token appeared before that token."
+Use real examples - Tie these to Bobby pet story example.
+> this token is the subject of that verb
+> this token is semantically near that noun
+> this token appeared before that token
+
+Your tensors being loaded after recieving your prompt.
+[Gif - Phalanx Spears]
 
 Notes:
 * LLMs are similar to a Markov process based off the entire state of the full context window.
@@ -52,25 +66,17 @@ Sampling = stochastic exploration with a bias toward high-probability regions
 ## Depth Vs Breadth First Search
 For graph exploration, we can follow two patterns. We can run a depth first algorythm, follow the "best guess" path and accept the first result we find. This is cheap, but won't find the most efficient result. Breadth first explores each tier of the domain exhaustively, is extreemly expensive but will find the best result.
 
-Most algorythms use a beam search, which is a middle ground which evaluates a prioritised selection of options. This explores a certain depth and breadth based on the most "valuable" moves and how much compute budget we can afford to spend.
+Most algorythms use a beam search, which is a middle ground that evaluates a prioritised selection of options. This explores a certain depth and breadth based on the most "valuable" moves and how much compute budget we can afford to spend.
 
 There's no direct parrable in LLMs as they don't support apply/revert as an exploration mechanism. They function by append only.
 
-To get around the limitations of this, I feel the most similar concept we have in LLMs is Reasoning behaviour. This looks like a pre-weighting activity that primes the tensors in the main section for the body of the response.
+To get around the limitations of this, I feel the most similar concept we have in LLMs is Reasoning behaviour. 
+This looks like a pre-weighting activity that primes the tensors ready to generate the body of the response.
 
-Reasoning levels indicate how much time the LLM will spend introspecting its chain of thought. Low would be more akin to a narrow beam search, a quick pass to get a solution fast. Higher reasoning covers more concepts and digs further into associated links, runs a wider selection beam at each step and in turn this takes longer and is more expensive / exhaustive.
+Reasoning levels indicate how much time the LLM will spend introspecting its chain of thought. Low would be more akin to a quick depth first search without much fan out, a pass to get a solution fast. Higher reasoning covers more concepts and digs further into associated links, runs a wider selection beam at each step and in turn this takes longer and is more expensive / exhaustive.
 
 Low reasoning = shallow evaluation, commit quickly (greedy or shallow minimax)
 High reasoning = deep evaluation before committing (deep minimax / iterative deepening)
-
-## Ambiguity
-I don't run a super computer, so I'm limited to a 4 quant integer model for local development, that means that my numerical resolution is 0-15 with integer level precision. A full 16 bit floating point model has a resolution of ~0.000061 to 65,504 with the full range of floating point precision.
-
-The impact is reduced fidelity. It's like looking at a blurry picture, harder to tell what it is, easier to get mixed up.
-
-This feeds into a venn diagram effect where a highly quantised model with well defined concepts will provide distinct answers, but a quantitised model blurrs the boundary and puts previously seperate concepts together into the same bucket.
-
-If you have concepts that are similar, at a lower quant level they merge and become indistinguishable. [They're the same picture meme]
 
 ## Routing
 
@@ -83,15 +89,24 @@ Depending on different adjectives a story route would run differently for big or
 [Diagram with highlights]
 
 Bot Attribution:
-The bot repeatedly raised Attention as a concept and while I can't say it is insight that comes from me, it is something that is relevant and fits the model.
+The bot repeatedly raised Attention as a concept and while it doesn't come from me, it definitely fits.
 
-Normal exploration algorythms look at adjacency and rate the move based on the cost of transition and value of the target state. LLMs can see the entire previous path (the context text) and the attention mechanism enables it to selectively focus on different areas of that text body it's like it has complete map visibility when making a move decision.
+Normal exploration algorythms look at adjacency and rate the move based on the cost of transition and value of the target state. LLMs can see the entire previous path (the context text) and the attention mechanism enables it to selectively focus on different areas of that text body. It's like it has complete map visibility when making a move decision.
 
-## Notes
-
-### Apertures / Doorways
+## Apertures / Doorways
 * LLMS have closing phrases that narrow options and opening phrases that expand possible options. "But wait.." or "Let me think deeply..." set up another sequence chain, rather than closing the conversation.
 * These can be viewed as doorways in pathfinding. Everything converges on an "aperture" and once there you have to "play" an expanding phrase to open the door and expand into other areas.
+
+## Ambiguity
+I don't run a super computer, so I'm limited to a 4 quant integer model for local development, that means that my numerical resolution is 0-15 with integer level precision. A full 16 bit floating point model has a resolution of ~0.000061 to 65,504 with the full range of floating point precision.
+
+The impact is reduced fidelity. It's like looking at a blurry picture, harder to tell what it is, easier to get mixed up.
+
+This feeds into a venn diagram effect where a highly quantised model with well defined concepts will provide distinct answers, but a quantitised model blurrs the boundary and puts previously seperate concepts together into the same bucket.
+
+If you have concepts that are similar, at a lower quant level they merge and become indistinguishable. [They're the same picture meme]
+
+## Terrain Manipulation - Signs and Landmines
 
 ### Poisoning Data
 * Seed source data with nonsense.
