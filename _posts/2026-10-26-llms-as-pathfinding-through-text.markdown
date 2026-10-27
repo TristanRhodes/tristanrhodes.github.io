@@ -10,7 +10,7 @@ In my [previous post](blogging-in-an-ai-world.html), I mentioned my first progra
 
 This set me up with two concepts, firstly exploring a domain and prioritising available moves/actions, secondly tokenising words/phrases into concepts based on local context.
 
-These two concepts underpin a lot of LLM behaviour and I'm going to try and lay them on top of each other conceptually, and frame things as an exploration algorithm.
+These two concepts underpin a lot of LLM behaviour and I'm going to use the exloration mechanism used in pathfinding and domain discovery as a lens for viewing LLM behaviour. Goal selection and what drives the heuristics aren't the same, and I'll try to cover that as we go.
 
 ## Exploration
 Let's start with exploration algorithms. The processes and loops that handle exploring a given domain, A*, Dijkstra's algorithm, chess move calculation, graph search.
@@ -54,14 +54,14 @@ Your tensors being loaded after receiving your prompt.
 ![Phalanx spears](/assets/llms-as-pathfinding-through-text/phalanx.gif)
 
 Notes:
-* LLMs are similar to a Markov process based off the entire state of the full context window.
+* LLMs are similar to a higher-order Markov process based off the entire state of the full context window.
 * Tensors in LLMs indicate next sequence probability, based off the cumulative weights of the preceding tokens.
 * LLMs don't have a destination, they just assign increasing weight to "end of conversation" token.
 
 Talk about Temperature:
-Temperature 0 = greedy best-first (always take the highest-probability edge)
-High temperature = random walk with strong biases
-Sampling = stochastic exploration with a bias toward high-probability regions
+Temperature 0 = greedy best-first, no variation, deterministic (always take the highest-probability edge)
+High temperature = random walk with strong biases (take one of the most likely possibilities inside the temperature range)
+Sampling = stochastic exploration with a bias toward high-probability regions (sample evenly from a high probability region)
 
 ## Depth Vs Breadth First Search
 For graph exploration, we can follow two patterns. We can run a depth first algorithm, follow the "best guess" path and accept the first result we find. This is cheap, but won't find the most efficient result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find the best result.
@@ -91,7 +91,7 @@ Depending on different adjectives a story route would run differently for big or
 Bot Attribution:
 The bot repeatedly raised Attention as a concept and while it doesn't come from me, it definitely fits.
 
-Normal exploration algorithms look at adjacency and rate the move based on the cost of transition and value of the target state. LLMs can see the entire previous path (the context text) and the attention mechanism enables it to selectively focus on different areas of that text body. It's like it has complete map visibility when making a move decision.
+Normal exploration algorithms look at adjacency and rate the move based on the cost of transition and value of the target state. LLMs can see the entire previous path (the context text) and the attention mechanism enables it to selectively focus on different areas of that text body.
 
 ## Apertures / Doorways
 
