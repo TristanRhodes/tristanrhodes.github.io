@@ -17,7 +17,7 @@ On the systems side, I lean towards simplicity. I’d rather bake checks and bal
 On the people side, I’ve coached a career changer with no coding background into an engineer shipping to production within three months. I’ve also helped eight engineers find their feet on a major modernisation programme. At one company, people from other teams kept applying to join mine. The other managers didn’t love it, but it told me the culture was working.
 
 ## Where I’m Spending My Time Now
-I first debugged strange AI behaviour about 25 years ago, writing a chess computer at university that kept marching a pawn up the board for no obvious reason. It turned out I’d overweighted forward pawn movement whenever there was no better option. A lot of today’s AI language puts new paint on old ideas, and much of what people now call agentic engineering is control systems by another name. That perspective shapes how I use these tools: they’re useful and fast, but they need guardrails.
+I first debugged strange AI behaviour about 25 years ago, writing a chess computer at university that kept marching a pawn up the board for no obvious reason. It turned out I’d overweighted forward pawn movement whenever there was no better option. A lot of today’s AI language puts new paint on old ideas, and much of what people now call agentic engineering is control systems by another name. That perspective shapes how I use these tools: they’re useful and fast, but they need guidance and guardrails.
 
 You’ll find my thinking on this across the site, including my [AI policy](/ai-policy) and my [Agent sandbox](https://github.com/pragmatic-systems/Pragmatic.AgentSandbox), where I test local large language models and AI-assisted engineering workflows.
 
