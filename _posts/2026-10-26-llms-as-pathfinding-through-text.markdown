@@ -49,42 +49,12 @@ There's no direct parallel in LLMs as they don't support apply/revert as an expl
 The tradeoff is the same, spend more time/compute in the problem space to produce a better/more accurate answer.
 
 ## Move Selection
-In an exploration algorithm the heuristic used to weight up the available options and prioritise what moves to apply and in what order/priority.
-
-For LLMs the Heuristic is intrinsic to its training, but driven by the initial prompt. A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a clear end condition. A vague prompt provides no clear objective - "Tell me something interesting" could produce anything.
-
-At the simplest level, a tensor describes the association between a number of concepts. 
-
-Use real examples - Tie these to Bobby pet story example.
-> this token is the subject of that verb
-> this token is semantically near that noun
-> this token appeared before that token
-
-LLMs use huge multi-dimensional arrays describing the association between multiple concepts at the same time, and these are the tensors for running their calculations.
-
-![3d tensor arrow over 3d vector space](/assets/llms-as-pathfinding-through-text/Components_stress_tensor.svg)
-
-The supplied context and generated response feed into the tensors and this in turn is used to determine the weight of the next token/word, which is then selected based on the temperature calculations and other parameters of LLMs.
-
-Your tensors being loaded after receiving your prompt.
-![Phalanx spears](/assets/llms-as-pathfinding-through-text/phalanx.gif)
-
-Notes:
-* Tensors in LLMs indicate next sequence probability, based off the cumulative weights of the preceding tokens.
-* LLMs don't have a destination, they just assign increasing weight to "end of conversation" token.
-
-Talk about Temperature:
-Temperature 0 = greedy best-first, no variation, deterministic (always take the highest-probability edge)
-High temperature = random walk with strong biases (take one of the most likely possibilities inside the temperature range)
-Sampling = stochastic exploration with a bias toward high-probability regions (sample evenly from a high probability region)
-
-## Routing
 
 Let's carry on the Bobby example - Give me a short story about Bobby and his pet. We'll keeping it vague and say the LLM drives the output selection.
 
 ![Bobby had a pet dog/cat/snake/lizard](/assets/llms-as-pathfinding-through-text/bobby-had-a-pet.png)
 
-Right now, all routes/options have equal weight. We could chose any of them any and the output would be sensible.
+Right now, all routes/options have (mostly) equal weight. We could chose any of them any and the output would be sensible.
 
 But if we inject an adjective into this sentence structure, this changes the option weighting, depending on which adjective we used.
 
@@ -92,9 +62,43 @@ But if we inject an adjective into this sentence structure, this changes the opt
 
 This adjective selection affects the pet selection, which drives the story subject selection, each chaining onto the next, based on the past. This looking back to generate forward approach is the mechanism behind Attention, as described in [Attention is all you need](https://research.google/pubs/attention-is-all-you-need/);
 
+Compared to an exploration algorithm, where the heuristic is used to weight up the available options and prioritise what moves to apply and in what order/priority, For LLMs the Heuristic is intrinsic to its training, but driven by the initial prompt + context generated so far. 
+
+A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a clear end condition. A vague prompt - "Tell me something interesting" provides no clear objective and could produce anything.
+
+But for LLMs this selection process is calculated through Tensors.
+
+### Tensors
+
+At the simplest conceptual level, a tensor describes the association between a number of concepts. It's way more complicated than that - interanlly there are huge multi-dimensional arrays describing multiple concept associations at the same time, but we're trying to keep it simple.
+
+A real world example of these kinds of associations can be represented like this:
+![Bobby had a pet - annotated](/assets/llms-as-pathfinding-through-text/text-exploration-annotated.png)
+
+Each of the comment boxes in the above diagram describes a reationship concept that would be encoded into the model weights. These weights are the tensor values which feed into the calculations for next word selection. 
+
+The supplied context and generated response feed into the tensors and this in turn is used to determine the weight of the next token/word, which is then selected based on the temperature settings and other parameters of LLMs.
+
+The temperature setting is the spread of selection over the target range, this determines predictability/repeatability and how close the LLM will adhere to a given thread:
+* Temperature 0: always take the highest-probability edge (no variation, deterministic)
+* High temperature: take one of the most likely possibilities inside the temperature range (semi random with strong biases)
+* Sampling: take randomly from inside the temperature range (even spread from inside the target range)
+
+Wikipedia uses the following diagram for Tensors
+
+![3d tensor arrow over 3d vector space](/assets/llms-as-pathfinding-through-text/Components_stress_tensor.svg)
+
+It's a lot of arrows, and I always feel that maps to ranks of spears pointing towards their target.
+
+Your tensors getting ready for battle:
+![Phalanx spears](/assets/llms-as-pathfinding-through-text/phalanx.gif)
+
+Notes:
+* LLMs don't have a hard destination, they just assign increasing weight to `EOS` token until it is inevitably generated in the feed. This ties in well to the gravity well analogy.
+
 ## Apertures / Doorways
 
-As LLMs follow their routed path through text, it can use phrases to open or close a sequence - these phrases can either narrow or open future options.
+As LLMs follow their path through text, it can use phrases to open or close a sequence - these phrases can either narrow or open future options.
 
 ### Closing phrases 
 These closing phrases lead up to the end of the Reasoning segment and move into response generation.
@@ -131,7 +135,7 @@ But wait... (Open the door)
 
 ![Doorway opening to new area](/assets/llms-as-pathfinding-through-text/Open%20Door.png)
 
-I mentioned gravity/attractors earlier, and you can image the gravity well sitting on the other side of the door, pulling the LLM towards it, until it narrows down its options. Once it hits the dead end, we play the "But wait.." tokens and can expand into the next phase.
+I mentioned gravity/attractors earlier, and you can image the gravity well sitting on the other side of the door, pulling the LLM towards it, until it narrows down its options. Once it hits the dead end, we play the "But wait.." tokens, the door opens, the gravity well moves and it can expand into the next phase.
 
 ## And more
 I've got some more analogies in the pipe, coming soon:
