@@ -10,14 +10,14 @@ I've [mentioned my first program was a Chess game](blogging-in-an-ai-world.html)
 
 This gives me a solid grounding in two concepts, firstly exploring a domain and prioritising available moves/actions, secondly tokenising words/phrases into concepts based on local context. 
 
-These two concepts underpin a lot of LLM behaviour and I'm going to use the exloration mechanism used in pathfinding and domain discovery as a lens for viewing an LLMs meandering through text. 
+These two concepts underpin a lot of LLM behaviour and I'm going to use the exploration mechanism used in pathfinding and domain discovery as a lens for viewing an LLM's meandering through text. 
 
-What drives the direction isn't quite the same, an exploration algorythm driven by a heuristic is pushed towards a destination, an LLM is pulled towards its end state like gravity (attractors). So the goal selection and what drives the heuristics aren't the same, but the exploration and selections mechanisms line up well.
+What drives the direction isn't quite the same, an exploration algorithm driven by a heuristic is pushed towards a destination, an LLM is pulled towards its end state like gravity (attractors). So the goal selection and what drives the heuristics aren't the same, but the exploration and selections mechanisms line up well.
 
 ## Exploration
 Let's start with exploration algorithms. The processes and loops that handle exploring a given domain, A*, Dijkstra's algorithm, chess move calculation and graph search, with some parallel concepts in LLM space.
 
-* Starting point: Where are we? Current location, current board state, current node, llm context.
+* Starting point: Where are we? Current location, current board state, current node, LLM context.
 * Valid moves: What can we do? Which adjacent squares are open? What moves are valid? What edges can I cross? What are the possible next top-k/top-p tokens?
 * Move selection: Which do we choose? What square is closest to my goal? Which move scores highest? Which tokens/words weigh the most?
 * Apply the move: Perform the action. Move to the square, move to the node, select a word.
@@ -33,49 +33,49 @@ While from an LLM perspective it explores like this:
 
 There are a couple of conceptual differences around this:
 
-* Exploration algorythms can back-track/unwind their stack and try different routes. LLMs work via append only, so while it might revise a previous move or decision, it won't undo it, so it stays in the context history (and can pollute it).
+* Exploration algorithms can back-track/unwind their stack and try different routes. LLMs work via append only, so while it might revise a previous move or decision, it won't undo it, so it stays in the context history (and can pollute it).
 * Graphs and A* use fixed maps, but LLMs procedurally generate their "terrain" at each step based off previous state and selects from what it can see now. 
 * Exploration algorithms select their direction based off a Heuristic. LLMs derive their direction from the weights build up from the context/prompt. Eg, asking for a story about Bobby's pet would get a pet branch, asking for a story about Bobby's opinion would get an opinionated branch.
 
 ### Depth Vs Breadth First Search
-For graph exploration, we can follow two search patterns. We can run a depth first algorithm, follow the "best guess" path and accept the first result we find. This is cheap, but won't find the best result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find the absoloute best result.
+For graph exploration, we can follow two search patterns. We can run a depth first algorithm, follow the "best guess" path and accept the first result we find. This is cheap, but won't find the best result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find the absolute best result.
 
 Most algorithms use a beam search, a hybrid of BFS/DFS that finds a good solution by prioritising searching towards the target, without being exhaustive. This explores a certain depth and breadth based on the most "valuable" moves and how much compute budget we can afford to spend.
 
 There's no direct parallel in LLMs as they don't support apply/revert as an exploration mechanism. They function by append only, and I think the closest concept we have in LLMs is Reasoning behaviour.
-* Low reasoning is shallow evaluation, commit quickly. This has a similar outcome to a depth first seach finding the first, most obvious answer.
+* Low reasoning is shallow evaluation, commit quickly. This has a similar outcome to a depth first search finding the first, most obvious answer.
 * High reasoning is deep evaluation before committing. This has a similar outcome to a broader beam search that spends more time finding a better, more complete answer.
 
 The tradeoff is the same, spend more time/compute in the problem space to produce a better/more accurate answer.
 
 ## Move Selection
 
-Let's carry on the Bobby example - Give me a short story about Bobby and his pet. We'll keeping it vague and say the LLM drives the output selection.
+Let's carry on the Bobby example - Give me a short story about Bobby and his pet. We'll keep it vague and say the LLM drives the output selection.
 
 ![Bobby had a pet dog/cat/snake/lizard](/assets/llms-as-pathfinding-through-text/bobby-had-a-pet.png)
 
-Right now, all routes/options have (mostly) equal weight. We could chose any of them any and the output would be sensible.
+Right now, all routes/options have (mostly) equal weight. We could choose any of them and the output would be sensible.
 
-But if we inject an adjective into this sentence structure, this changes the option weighting, depending on which adjective we used.
+But if we inject an adjective into this sentence structure, this changes the option weighting, depending on which adjective we use.
 
 ![Bobby had a furry/scaly pet (dog/cat)/(snake/lizard)](/assets/llms-as-pathfinding-through-text/bobby-had-a-adjective-pet.png)
 
-This adjective selection affects the pet selection, which drives the story subject selection, each chaining onto the next, based on the past. This looking back to generate forward approach is the mechanism behind Attention, as described in [Attention is all you need](https://research.google/pubs/attention-is-all-you-need/);
+This adjective selection affects the pet selection, which drives the story subject selection, each chaining onto the next, based on the past. This looking back to generate forward approach is the mechanism behind Attention, as described in [Attention is all you need](https://research.google/pubs/attention-is-all-you-need/).
 
-Compared to an exploration algorithm, where the heuristic is used to weight up the available options and prioritise what moves to apply and in what order/priority, For LLMs the Heuristic is intrinsic to its training, but driven by the initial prompt + context generated so far. 
+Compared to an exploration algorithm, where the heuristic is used to weight up the available options and prioritise what moves to apply and in what order/priority, for LLMs the Heuristic is intrinsic to its training, but driven by the initial prompt + context generated so far. 
 
-A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a clear end condition. A vague prompt - "Tell me something interesting" provides no clear objective and could produce anything.
+A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a clear direction. A vague prompt - "Tell me something interesting" provides no clear objective and could go anywhere.
 
-But for LLMs this selection process is calculated through Tensors.
+## Tensors
 
-### Tensors
+For LLMs this selection process is calculated through Tensors.
 
-At the simplest conceptual level, a tensor describes the association between a number of concepts. It's way more complicated than that - interanlly there are huge multi-dimensional arrays describing multiple concept associations at the same time, but we're trying to keep it simple.
+At the simplest conceptual level, a tensor describes the association between a number of concepts. It's way more [complicated than that](https://en.wikipedia.org/wiki/Tensor_(machine_learning)) - interanlly there are huge multi-dimensional arrays describing multiple concept associations at the same time, but we're trying to keep it simple.
 
 A real world example of these kinds of associations can be represented like this:
 ![Bobby had a pet - annotated](/assets/llms-as-pathfinding-through-text/text-exploration-annotated.png)
 
-Each of the comment boxes in the above diagram describes a reationship concept that would be encoded into the model weights. These weights are the tensor values which feed into the calculations for next word selection. 
+Each of the comment boxes in the above diagram describes a relationship concept that would be encoded into the model weights. These weights are the tensor values which feed into the calculations for next word selection. 
 
 The supplied context and generated response feed into the tensors and this in turn is used to determine the weight of the next token/word, which is then selected based on the temperature settings and other parameters of LLMs.
 
@@ -94,7 +94,7 @@ Your tensors getting ready for battle:
 ![Phalanx spears](/assets/llms-as-pathfinding-through-text/phalanx.gif)
 
 Notes:
-* LLMs don't have a hard destination, they just assign increasing weight to `EOS` token until it is inevitably generated in the feed. This ties in well to the gravity well analogy.
+* LLMs don't have a hard destination, they just move forward one step at a time until the `EOS` pops up in the feed. This ties in well to the gravity well analogy.
 
 ## Apertures / Doorways
 
@@ -121,7 +121,7 @@ On the other hand, these phrases can be used to open up or generate new paths, k
 * Let me think about what's strong and weak...
 * Let me suggest edits based on the instructions in agents.md...
 
-You can see this behaviour if you look at the reasoning logs and follow the chain of thought. It'll spend some time exploring a concept, play around with some hypotheses and reach an end point for a given "thought". At this point it can either move to the next phase, wrap up the response, or explore something else.
+You can see this behaviour if you look at the reasoning logs and follow the chain of thought. It'll spend some time exploring a concept, play around with some hypotheses and reach an end point for a given "thought". At this point it can either explore something else, move to the next phase or wrap up the response.
 
 These phrases can be viewed as doorways in pathfinding, you have moved up to a portal, and now something needs to happen to access the world/terrain on the other side. Everything converges on an "aperture" and once there you have to "play" an expanding phrase to open the door and move into other areas, otherwise the sequence stops.
 
@@ -135,13 +135,17 @@ But wait... (Open the door)
 
 ![Doorway opening to new area](/assets/llms-as-pathfinding-through-text/Open%20Door.png)
 
-I mentioned gravity/attractors earlier, and you can image the gravity well sitting on the other side of the door, pulling the LLM towards it, until it narrows down its options. Once it hits the dead end, we play the "But wait.." tokens, the door opens, the gravity well moves and it can expand into the next phase.
+I mentioned gravity/attractors earlier, and you can imagine the gravity well sitting on the other side of the door, pulling the LLM towards it, until it narrows down its options. Once it hits the dead end, we play the "But wait.." tokens, the door opens, the gravity well moves and it can expand into the next phase.
 
-## And more
-I've got some more analogies in the pipe, coming soon:
-* Poisoning data - Confusing signs and useless compasess.
+## Wrap up
+Ok, I think I've stretched / bent the analogy as much as I can. It's not a perfect fit by any means, but I feel the concepts are close enough that it gives a good mental scaffold for understanding how these things work under the hood, and dispelling some of the magic. 
+
+I've got some more analogies in the pipe:
+* Poisoning data - Confusing signs and useless compasses.
 * Trigger Training - Tricking an LLM down a path.
-* Memories in the machine - Text in a labarinth of maths.
+* Memories in the machine - Finding text in a labyrinth of maths.
+
+Coming soon!
 
 ### Credits
 Header photo [Longleat Maze](https://commons.wikimedia.org/wiki/File:Longleat-maze.jpg) by [Niki Odolphie](https://www.flickr.com/photos/99962592@N00/2849889847/), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
