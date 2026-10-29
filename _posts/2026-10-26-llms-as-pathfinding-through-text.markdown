@@ -6,9 +6,9 @@ excerpt: Ok... hear me out.
 featured-image: /assets/llms-as-pathfinding-through-text/featured-image.jpg
 ---
 
-I've [mentioned my first program was a Chess game](blogging-in-an-ai-world.html). I've also had a long standing passion for exploration and [pathfinding projects](https://github.com/pragmatic-systems/Pragmatic.Playground.Pathfinding) and I've covered [NLP / Text processing and Tokenization in depth](https://github.com/pragmatic-systems/Pragmatic.Playground.Parsing) for over half a decade.
+I've [mentioned my first program was a Chess game](/2026/10/06/blogging-in-an-ai-world.html). I've also had a long standing passion for exploration and [pathfinding projects](https://github.com/pragmatic-systems/Pragmatic.Playground.Pathfinding) and I've covered [NLP / Text processing and Tokenization in depth](https://github.com/pragmatic-systems/Pragmatic.Playground.Parsing) for over half a decade.
 
-This gives me a solid grounding in two concepts, firstly exploring a domain and prioritising available moves/actions, secondly tokenising words/phrases into concepts based on local context. 
+This gives me a solid grounding in two concepts, firstly exploring a domain and prioritising available moves/actions, secondly mapping words/phrases into tokens based on local context. 
 
 These two concepts underpin a lot of LLM behaviour and I'm going to use the exploration mechanism used in pathfinding and domain discovery as a lens for viewing an LLM's meandering through text. 
 
@@ -35,15 +35,15 @@ There are a couple of conceptual differences around this:
 
 * Exploration algorithms can back-track/unwind their stack and try different routes. LLMs work via append only, so while it might revise a previous move or decision, it won't undo it, so it stays in the context history (and can pollute it).
 * Graphs and A* use fixed maps, but LLMs procedurally generate their "terrain" at each step based off previous state and selects from what it can see now. 
-* Exploration algorithms select their direction based off a Heuristic. LLMs derive their direction from the weights build up from the context/prompt. Eg, asking for a story about Bobby's pet would get a pet branch, asking for a story about Bobby's opinion would get an opinionated branch.
+* Exploration algorithms select their direction based off a Heuristic. LLMs derive their direction from the weights build up from the context/prompt. Eg, asking for a story about Bobby's pet would get a pet activity branch, asking for a story about Bobby's toy would get an branch about play time.
 
 ### Depth Vs Breadth First Search
-For graph exploration, we can follow two search patterns. We can run a depth first algorithm, follow the "best guess" path and accept the first result we find. This is cheap, but won't find the best result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find the absolute best result.
+For graph exploration, we can follow two main search patterns. We can run a depth first algorithm, follow the "best guess" path and accept the first result we find. This is cheap, but won't find the best result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find the absolute best result.
 
-Most algorithms use a beam search, a hybrid of BFS/DFS that finds a good solution by prioritising searching towards the target, without being exhaustive. This explores a certain depth and breadth based on the most "valuable" moves and how much compute budget we can afford to spend.
+A beam search is a middle ground between BFS/DFS that finds a good solution by prioritising searching towards the target, without being exhaustive. This explores a certain depth and breadth based on the most "valuable" moves and how much compute budget we can afford to spend.
 
-There's no direct parallel in LLMs as they don't support apply/revert as an exploration mechanism. They function by append only, and I think the closest concept we have in LLMs is Reasoning behaviour.
-* Low reasoning is shallow evaluation, commit quickly. This has a similar outcome to a depth first search finding the first, most obvious answer.
+While LLMs don't support apply/revert as an exploration mechanism. They function by append only, and this beam search concept shows up in LLMs Reasoning behaviour.
+* Low reasoning is shallow evaluation, commit quickly. This has a similar outcome to a thin beam search that behaves like a depth first search, finding the first, most obvious answer.
 * High reasoning is deep evaluation before committing. This has a similar outcome to a broader beam search that spends more time finding a better, more complete answer.
 
 The tradeoff is the same, spend more time/compute in the problem space to produce a better/more accurate answer.
@@ -75,7 +75,9 @@ At the simplest conceptual level, a tensor describes the association between a n
 A real world example of these kinds of associations can be represented like this:
 ![Bobby had a pet - annotated](/assets/llms-as-pathfinding-through-text/text-exploration-annotated.png)
 
-Each of the comment boxes in the above diagram describes a relationship concept that would be encoded into the model weights. These weights are the tensor values which feed into the calculations for next word selection. 
+Each of the comment boxes in the above diagram describes a relationship concept that would be encoded into the model weights. These weights are the tensor values which feed into the calculations for next word selection, and they end up being represented like this:
+
+![Tensor Matrices](/assets/llms-as-pathfinding-through-text/Tensor_dimensions.svg)
 
 The supplied context and generated response feed into the tensors and this in turn is used to determine the weight of the next token/word, which is then selected based on the temperature settings and other parameters of LLMs.
 
@@ -98,7 +100,7 @@ Notes:
 
 ## Apertures / Doorways
 
-As LLMs follow their path through text, it can use phrases to open or close a sequence - these phrases can either narrow or open future options.
+As LLMs follow their path through text, they can use phrases to open or close a sequence - these phrases can either narrow or open future options.
 
 ### Closing phrases 
 These closing phrases lead up to the end of the Reasoning segment and move into response generation.
@@ -123,24 +125,24 @@ On the other hand, these phrases can be used to open up or generate new paths, k
 
 You can see this behaviour if you look at the reasoning logs and follow the chain of thought. It'll spend some time exploring a concept, play around with some hypotheses and reach an end point for a given "thought". At this point it can either explore something else, move to the next phase or wrap up the response.
 
-These phrases can be viewed as doorways in pathfinding, you have moved up to a portal, and now something needs to happen to access the world/terrain on the other side. Everything converges on an "aperture" and once there you have to "play" an expanding phrase to open the door and move into other areas, otherwise the sequence stops.
+These phrases can be viewed as doorways in pathfinding. You've moved up to one, and now something needs to happen to access the world/terrain on the other side. Everything converges on an "aperture" and once there you have to "play" an expanding phrase to open the door and move into other areas, otherwise the sequence stops.
 
 ![Mysterious door](/assets/llms-as-pathfinding-through-text/door-placeholder.jpg)
 
 Here we are converging on a dead end and we would expect to generate an EOS token in this situation, or move from the Reasoning to the Response Generating phase of output.
 
-![Path converging on a closed doorway](/assets/llms-as-pathfinding-through-text/Closed%20Door.png)
+![Path converging on a closed doorway](/assets/llms-as-pathfinding-through-text/closed-door.png)
 
 But wait... (Open the door)
 
-![Doorway opening to new area](/assets/llms-as-pathfinding-through-text/Open%20Door.png)
+![Doorway opening to new area](/assets/llms-as-pathfinding-through-text/open-door.png)
 
 I mentioned gravity/attractors earlier, and you can imagine the gravity well sitting on the other side of the door, pulling the LLM towards it, until it narrows down its options. Once it hits the dead end, we play the "But wait.." tokens, the door opens, the gravity well moves and it can expand into the next phase.
 
 ## Wrap up
 Ok, I think I've stretched / bent the analogy as much as I can. It's not a perfect fit by any means, but I feel the concepts are close enough that it gives a good mental scaffold for understanding how these things work under the hood, and dispelling some of the magic. 
 
-I've got some more analogies in the pipe:
+I've got some more analogies in the pipeline:
 * Poisoning data - Confusing signs and useless compasses.
 * Trigger Training - Tricking an LLM down a path.
 * Memories in the machine - Finding text in a labyrinth of maths.
