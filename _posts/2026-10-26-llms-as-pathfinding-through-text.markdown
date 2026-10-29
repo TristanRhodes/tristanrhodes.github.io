@@ -21,7 +21,7 @@ Let's start with exploration algorithms. The processes and loops that handle exp
 * Valid moves: What can we do? Which adjacent squares are open? What moves are valid? What edges can I cross? What are the possible next top-k/top-p tokens?
 * Move selection: Which do we choose? What square is closest to my goal? Which move scores highest? Which tokens/words weigh the most?
 * Apply the move: Perform the action. Move to the square, move to the node, select a word.
-* Loop until you run out of potential options, hit an exit condition, or an over weighted `EOS` token.
+* Loop until you run out of potential options, hit an exit condition, or an `EOS` token.
 
 So a chess / graph search explores like this:
 
@@ -35,14 +35,14 @@ There are a couple of conceptual differences around this:
 
 * Exploration algorithms can back-track/unwind their stack and try different routes. LLMs work via append only, so while it might revise a previous move or decision, it won't undo it, so it stays in the context history (and can pollute it).
 * Graphs and A* use fixed maps, but LLMs procedurally generate their "terrain" at each step based off previous state and selects from what it can see now. 
-* Exploration algorithms select their direction based off a Heuristic. LLMs derive their direction from the weights build up from the context/prompt. Eg, asking for a story about Bobby's pet would get a pet activity branch, asking for a story about Bobby's toy would get an branch about play time.
+* Exploration algorithms select their direction from a heuristic. LLMs derive their direction by projecting context/prompt through the weights. Eg, asking for a story about Bobby's pet would get a pet activity branch, asking for a story about Bobby's toy would get a branch about play time.
 
-### Depth Vs Breadth First Search
+## Depth Vs Breadth First Search
 For graph exploration, we can follow two main search patterns. We can run a depth first algorithm, follow the "best guess" path and accept the first result we find. This is cheap, but won't find the best result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find the absolute best result.
 
 A beam search is a middle ground between BFS/DFS that finds a good solution by prioritising searching towards the target, without being exhaustive. This explores a certain depth and breadth based on the most "valuable" moves and how much compute budget we can afford to spend.
 
-While LLMs don't support apply/revert as an exploration mechanism. They function by append only, and this beam search concept shows up in LLMs Reasoning behaviour.
+This beam search concept shows up in LLMs Reasoning behaviour:
 * Low reasoning is shallow evaluation, commit quickly. This has a similar outcome to a thin beam search that behaves like a depth first search, finding the first, most obvious answer.
 * High reasoning is deep evaluation before committing. This has a similar outcome to a broader beam search that spends more time finding a better, more complete answer.
 
@@ -70,33 +70,22 @@ A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a
 
 For LLMs this selection process is calculated through Tensors.
 
-At the simplest conceptual level, a tensor describes the association between a number of concepts. It's way more [complicated than that](https://en.wikipedia.org/wiki/Tensor_(machine_learning)) - interanlly there are huge multi-dimensional arrays describing multiple concept associations at the same time, but we're trying to keep it simple.
+At the simplest conceptual level, a tensor encodes the relationship between concepts - how strong a connection between things is and in what context. It's way more [complicated than that](https://en.wikipedia.org/wiki/Tensor_(machine_learning)) - internally there are huge multi-dimensional arrays which describe multiple concept associations at the same time, but we're trying to keep it simple.
 
 A real world example of these kinds of associations can be represented like this:
 ![Bobby had a pet - annotated](/assets/llms-as-pathfinding-through-text/text-exploration-annotated.png)
 
 Each of the comment boxes in the above diagram describes a relationship concept that would be encoded into the model weights. These weights are the tensor values which feed into the calculations for next word selection, and they end up being represented like this:
-
 ![Tensor Matrices](/assets/llms-as-pathfinding-through-text/Tensor_dimensions.svg)
 
 The supplied context and generated response feed into the tensors and this in turn is used to determine the weight of the next token/word, which is then selected based on the temperature settings and other parameters of LLMs.
 
-The temperature setting is the spread of selection over the target range, this determines predictability/repeatability and how close the LLM will adhere to a given thread:
-* Temperature 0: always take the highest-probability edge (no variation, deterministic)
-* High temperature: take one of the most likely possibilities inside the temperature range (semi random with strong biases)
-* Sampling: take randomly from inside the temperature range (even spread from inside the target range)
+The temperature setting is the spread of selection over the target, this determines predictability/repeatability and how close the LLM will adhere to a given thread:
+* Temperature 0: always take the highest-probability (no variation, deterministic)
+* Temperature 1: natural output (variation follows the model variation)
+* Temperature >1: sample from outside of normal range (unusual associations become more probable, eg furry snake)
 
-Wikipedia uses the following diagram for Tensors
-
-![3d tensor arrow over 3d vector space](/assets/llms-as-pathfinding-through-text/Components_stress_tensor.svg)
-
-It's a lot of arrows, and I always feel that maps to ranks of spears pointing towards their target.
-
-Your tensors getting ready for battle:
-![Phalanx spears](/assets/llms-as-pathfinding-through-text/phalanx.gif)
-
-Notes:
-* LLMs don't have a hard destination, they just move forward one step at a time until the `EOS` pops up in the feed. This ties in well to the gravity well analogy.
+Based off this, LLMs don't have a hard destination encoded in a heuristic, they are guided by the tensors, and move forward one step at a time until the `EOS` is selected. This ties in well to the gravity analogy - pulling the result towards `EOS` like a river following gravity.
 
 ## Apertures / Doorways
 
@@ -140,14 +129,15 @@ But wait... (Open the door)
 I mentioned gravity/attractors earlier, and you can imagine the gravity well sitting on the other side of the door, pulling the LLM towards it, until it narrows down its options. Once it hits the dead end, we play the "But wait.." tokens, the door opens, the gravity well moves and it can expand into the next phase.
 
 ## Wrap up
-Ok, I think I've stretched / bent the analogy as much as I can. It's not a perfect fit by any means, but I feel the concepts are close enough that it gives a good mental scaffold for understanding how these things work under the hood, and dispelling some of the magic. 
+Ok, I think I've stretched / bent the analogy as much as I can. It's not a perfect fit by any means, but I think the concepts are close enough that it gives a good mental scaffold for understanding how these things work under the hood. 
 
 I've got some more analogies in the pipeline:
-* Poisoning data - Confusing signs and useless compasses.
+* Data Poisoning - Confusing signs and useless compasses.
 * Trigger Training - Tricking an LLM down a path.
+* Correlations and Hallucinations - Conflating concepts at lower quants.
 * Memories in the machine - Finding text in a labyrinth of maths.
 
 Coming soon!
 
 ### Credits
-Header photo [Longleat Maze](https://commons.wikimedia.org/wiki/File:Longleat-maze.jpg) by [Niki Odolphie](https://www.flickr.com/photos/99962592@N00/2849889847/), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
+Header photo [Longleat Maze](https://commons.wikimedia.org/wiki/File:Longleat-maze.jpg) by Niki Odolphie.
