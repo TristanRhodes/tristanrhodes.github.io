@@ -21,7 +21,7 @@ Let's start with exploration algorithms. The processes and loops that handle exp
 * Valid moves: What can we do? Which adjacent squares are open? What moves are valid? What edges can I cross? What are the possible next top-k/top-p tokens?
 * Move selection: Which do we choose? What square is closest to my goal? Which move scores highest? Which tokens/words weigh the most?
 * Apply the move: Perform the action. Move to the square, move to the node, select a word.
-* Loop until you run out of potential options, hit an exit condition, or an `EOS` token.
+* Loop until you run out of potential options, hit an exit condition, or generate an `EOS` token.
 
 So a chess / graph search explores like this:
 
@@ -62,7 +62,7 @@ But if we inject an adjective into this sentence structure, this changes the opt
 
 This adjective selection affects the pet selection, which drives the story subject selection, each chaining onto the next, based on the past. This looking back to generate forward approach is the mechanism behind Attention, as described in [Attention is all you need](https://research.google/pubs/attention-is-all-you-need/).
 
-Compared to an exploration algorithm, where the heuristic is used to weight up the available options and prioritise what moves to apply and in what order/priority, for LLMs the Heuristic is intrinsic to its training, but driven by the initial prompt + context generated so far. 
+Compared to an exploration algorithm, where the heuristic is used to weight up the available options and prioritise what moves to apply and in what order/priority, for an LLM the Heuristic is intrinsic to its training, but driven by the initial prompt + context generated so far. 
 
 A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a clear direction. A vague prompt - "Tell me something interesting" provides no clear objective and could go anywhere.
 
