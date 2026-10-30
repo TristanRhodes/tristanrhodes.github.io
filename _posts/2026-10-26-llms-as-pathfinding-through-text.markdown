@@ -21,7 +21,7 @@ Let's start with exploration algorithms. The processes and loops that handle exp
 * Valid moves: What can we do? Which adjacent squares are open? What moves are valid? What edges can I cross? What are the possible next top-k/top-p tokens?
 * Move selection: Which do we choose? What square is closest to my goal? Which move scores highest? Which tokens/words weigh the most?
 * Apply the move: Perform the action. Move to the square, move to the node, select a word.
-* Loop until you run out of potential options, hit an exit condition, or generate an `EOS` token.
+* Loop until you run out of potential options, hit an exit condition, or generate an `EOS` (End of Sequence) token.
 
 So a chess / graph search explores like this:
 
@@ -38,15 +38,15 @@ There are a couple of conceptual differences around this:
 * Exploration algorithms select their direction from a heuristic. LLMs derive their direction by projecting context/prompt through the weights. Eg, asking for a story about Bobby's pet would get a pet activity branch, asking for a story about Bobby's toy would get a branch about play time.
 
 ## Depth Vs Breadth First Search
-For graph exploration, we can follow two main search patterns. We can run a depth first algorithm, follow the "best guess" path and accept the first result we find. This is cheap, but won't find the best result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find the absolute best result.
+For graph exploration, we can follow two main search patterns. We can run a depth first algorithm, follow the most obvious path and accept the first result we find. This is cheap, but won't find the best result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find the best result.
 
-A beam search is a middle ground between BFS/DFS that finds a good solution by prioritising searching towards the target, without being exhaustive. This explores a certain depth and breadth based on the most "valuable" moves and how much compute budget we can afford to spend.
+A beam search in pathfinding is a middle ground between BFS/DFS that finds a good solution by prioritising searching towards the target, without being exhaustive. This explores a certain depth and breadth based on the most "valuable" moves and how much compute budget we can afford to spend.
 
-This beam search concept shows up in LLMs Reasoning behaviour:
-* Low reasoning is shallow evaluation, commit quickly. This has a similar outcome to a thin beam search that behaves like a depth first search, finding the first, most obvious answer.
-* High reasoning is deep evaluation before committing. This has a similar outcome to a broader beam search that spends more time finding a better, more complete answer.
+We can compare this exploration spectrum to LLMs Reasoning behaviour:
+* Low reasoning is a shorter, narrower search, quick answer.
+* High reasoning is longer, wider evaluation before generating an answer.
 
-The tradeoff is the same, spend more time/compute in the problem space to produce a better/more accurate answer.
+So if we think of reasoning as the breadth/depth of the exploration, the tradeoff is the same, spend more time/compute in the problem space to produce a better/more accurate answer.
 
 ## Move Selection
 
@@ -70,29 +70,41 @@ A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a
 
 For LLMs this selection process is calculated through Tensors.
 
-At the simplest conceptual level, a tensor encodes the relationship between concepts - how strong a connection between things is and in what context. It's way more [complicated than that](https://en.wikipedia.org/wiki/Tensor_(machine_learning)) - internally there are huge multi-dimensional arrays which describe multiple concept associations at the same time, but we're trying to keep it simple.
+At the simplest conceptual level, a tensor is a transformation array that encodes the relationship between concepts (similar to matrix based relative transformations in 3D environments). It's [way more complicated than that](https://en.wikipedia.org/wiki/Tensor_(machine_learning)) - internally there are huge multi-dimensional arrays which describe multiple concept associations at the same time, but we're trying to keep it simple.
 
 A real world example of these kinds of associations can be represented like this:
+
 ![Bobby had a pet - annotated](/assets/llms-as-pathfinding-through-text/text-exploration-annotated.png)
 
-Each of the comment boxes in the above diagram describes a relationship concept that would be encoded into the model weights. These weights are the tensor values which feed into the calculations for next word selection, and they end up being represented like this:
+Each of the comment boxes in the above diagram describes a relationship concept that would be encoded into the model weights. These weights compose the tensor values which feed into the calculations for next word selection, and they end up being represented like this:
+
 ![Tensor Matrices](/assets/llms-as-pathfinding-through-text/Tensor_dimensions.svg)
+Credit: Image [from wikipedia](https://en.wikipedia.org/wiki/Tensor_(machine_learning))
+
 
 The supplied context and generated response feed into the tensors and this in turn is used to determine the weight of the next token/word, which is then selected based on the temperature settings and other parameters of LLMs.
 
 The temperature setting is the spread of selection over the target, this determines predictability/repeatability and how close the LLM will adhere to a given thread:
 * Temperature 0: always take the highest-probability (no variation, deterministic)
-* Temperature 1: natural output (variation follows the model variation)
+* Temperature 1: default model output (follows the natural model probabilities)
 * Temperature >1: sample from outside of normal range (unusual associations become more probable, eg furry snake)
 
-Based off this, LLMs don't have a hard destination encoded in a heuristic, they are guided by the tensors, and move forward one step at a time until the `EOS` is selected. This ties in well to the gravity analogy - pulling the result towards `EOS` like a river following gravity.
+Based off this, LLMs don't have a hard destination encoded in a heuristic, they are guided by the tensors, and move forward one step at a time, pulling the result closer towards the `EOS`.
 
 ## Apertures / Doorways
 
 As LLMs follow their path through text, they can use phrases to open or close a sequence - these phrases can either narrow or open future options.
 
+### Opening Phrases
+These phrases can be used to open up or generate new paths, keep the reasoning section alive for longer (broader search), or be dropped into the response section as a revised insight.
+
+* But wait...
+* Let me think through the key concepts...
+* Let me think about what's strong and weak...
+* Let me suggest edits based on the instructions in agents.md...
+
 ### Closing phrases 
-These closing phrases lead up to the end of the Reasoning segment and move into response generation.
+On the other hand, these closing phrases lead up to the end of the Reasoning segment and move into response generation.
 
 * I'll write the response as a summary
 * Let me structure my review clearly
@@ -104,19 +116,11 @@ And these closing phrases lead up to the end of the response:
 * What do you find [adjective]? Is it [a], [b] or [c]? (Wait for input)
 * Want me to do that for you? (Wait for input)
 
-### Opening Phrases
-On the other hand, these phrases can be used to open up or generate new paths, keep the reasoning section alive for longer (broader search), or be dropped into the response section as a revised insight.
-
-* But wait...
-* Let me think through the key concepts...
-* Let me think about what's strong and weak...
-* Let me suggest edits based on the instructions in agents.md...
-
 You can see this behaviour if you look at the reasoning logs and follow the chain of thought. It'll spend some time exploring a concept, play around with some hypotheses and reach an end point for a given "thought". At this point it can either explore something else, move to the next phase or wrap up the response.
 
-These phrases can be viewed as doorways in pathfinding. You've moved up to one, and now something needs to happen to access the world/terrain on the other side. Everything converges on an "aperture" and once there you have to "play" an expanding phrase to open the door and move into other areas, otherwise the sequence stops.
+These phrases can be viewed as doorways in pathfinding. You've moved up to one, and now something needs to happen to access the world/terrain on the other side. Everything converges on an "aperture" and once there you have to select an expanding phrase to open the door and move into other areas, otherwise the sequence ends.
 
-![Mysterious door](/assets/llms-as-pathfinding-through-text/door-placeholder.jpg)
+![Mysterious door](/assets/llms-as-pathfinding-through-text/mysterious-door.jpg)
 
 Here we are converging on a dead end and we would expect to generate an EOS token in this situation, or move from the Reasoning to the Response Generating phase of output.
 
@@ -126,7 +130,7 @@ But wait... (Open the door)
 
 ![Doorway opening to new area](/assets/llms-as-pathfinding-through-text/open-door.png)
 
-I mentioned gravity/attractors earlier, and you can imagine the gravity well sitting on the other side of the door, pulling the LLM towards it, until it narrows down its options. Once it hits the dead end, we play the "But wait.." tokens, the door opens, the gravity well moves and it can expand into the next phase.
+I mentioned gravity/attractors earlier, and you can imagine the gravity well sitting on the other side of the door, pulling the LLM towards it, until it narrows down its options. Once it hits the dead end, we generate the "But wait.." tokens, the door opens, the gravity well moves and it can expand into the next phase.
 
 ## Wrap up
 Ok, I think I've stretched / bent the analogy as much as I can. It's not a perfect fit by any means, but I think the concepts are close enough that it gives a good mental scaffold for understanding how these things work under the hood. 
