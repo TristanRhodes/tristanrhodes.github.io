@@ -42,13 +42,11 @@ For graph exploration, we can follow two main search patterns. We can run a dept
 
 We can compare this exploration spectrum to LLMs Reasoning behaviour:
 
-Low reasoning is a shorter, narrower search, quick answer.
+Low reasoning is a shorter, narrower search, quick answer: 
+> Bobby had a dog. The dog was big. Bobby walked the dog. The end.
 
-"Bobby had a dog. The dog was big. Bobby walked the dog. The end."
-
-High reasoning is longer, wider evaluation before generating an answer.
-
-"Bobby had a dog — which kind? A labrador? A terrier? What's the personality? If it's a terrier, the story is about energy and mischief. If it's a labrador, it's about loyalty and patience. Let's go with a terrier because it creates more narrative tension..."
+High reasoning is a longer, wider evaluation before generating an answer: 
+> Bobby had a dog — which kind? A labrador? A terrier? What's the personality? If it's a terrier, the story is about energy and mischief. If it's a labrador, it's about loyalty and patience. Let's go with a terrier because it creates more narrative tension...
 
 So if we think of reasoning as the breadth/depth of the exploration, the tradeoff is the same, spend more time/compute in the problem space to produce a better/more accurate answer.
 
@@ -68,7 +66,7 @@ This adjective selection affects the pet selection, which drives the story subje
 
 Compared to an exploration algorithm, where the heuristic is used to weight up the available options and prioritise what moves to apply and in what order/priority, for an LLM the Heuristic is intrinsic to its training, but driven by the initial prompt + context generated so far. 
 
-A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a clear direction. A vague prompt - "Tell me something interesting" provides no clear objective and could go anywhere.
+A prompt of `Complete the sentence: Harry Potter and the` sets up a chain with a clear direction. A vague prompt - `Tell me something interesting` provides no clear objective and could go anywhere.
 
 ## Tensors
 
@@ -96,7 +94,7 @@ Based off this, LLMs don't have a hard destination encoded in a heuristic, they 
 
 ## Apertures / Doorways
 
-As LLMs follow their path through text, they can use phrases to open or close a sequence - these phrases can either narrow or open future options.
+As LLMs find their way through text, they can use phrases to open or close a sequence - these phrases can either narrow or open future options.
 
 ### Opening Phrases
 These phrases can be used to open up or generate new paths, keep the reasoning section alive for longer (broader search), or be dropped into the response section as a revised insight.
