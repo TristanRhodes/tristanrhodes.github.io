@@ -26,3 +26,4 @@ Jekyll blog published to GitHub Pages at https://www.tristan-rhodes.co.uk.
 - Generate scaffolding only: file layout, front matter, asset wiring.
 - When creating new posts, leave `title`, `excerpt`, and body as placeholders for the author.
 - When reviewing copy, flag issues (clarity, contradictions, technical inaccuracy) but do not suggest rewordings, new content or technical direction.
+- When technical re-framing is needed, highlight the options as simply as possible.
