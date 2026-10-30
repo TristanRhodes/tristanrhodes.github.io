@@ -8,7 +8,7 @@ featured-image: /assets/scannerless-parsing/featured-image.jpg
 
 ### Previously
 
-Over my last few posts I've covered [pattern matching with regex](/2021/12/11/regex-redemption.html), how to [break down a sentence into recognized parts](/2021/12/19/tokenisation.html) using a lexer/tokeniser, creating the basic [building blocks of a combinatorial parser](http://localhost:4000/2022/01/07/expression-parsing.html) from an OO perspective and migrated it all to a [purely functional approach](http://localhost:4000/2022/01/16/expression-parsing-monads.html).
+Over my last few posts I've covered [pattern matching with regex](/2021/12/11/regex-redemption.html), how to [break down a sentence into recognized parts](/2021/12/19/tokenisation.html) using a lexer/tokeniser, creating the basic [building blocks of a combinatorial parser](/2022/01/07/expression-parsing.html) from an OO perspective and migrated it all to a [purely functional approach](/2022/01/16/expression-parsing-monads.html).
 
 We used a two phase process, firstly a Lexer/Tokeniser, where we turned a string into higher order tokens such as Day, ClockTime and Reserved Words, and a combinatorial expression Parser to process the structure of phrase:
 
