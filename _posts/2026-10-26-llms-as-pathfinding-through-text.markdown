@@ -10,7 +10,7 @@ I've [mentioned my first program was a Chess game](/2026/10/06/blogging-in-an-ai
 
 This gives me a solid grounding in two concepts, firstly exploring a domain and prioritising available moves/actions, secondly mapping words/phrases into tokens based on local context. 
 
-These two concepts underpin a lot of LLM behaviour and I'm going to use the exploration mechanism used in pathfinding and domain discovery as a lens for viewing an LLM's meandering through text. 
+These two concepts underpin a lot of LLM behaviour and I'm going to use the exploration mechanisms in pathfinding and domain discovery as a lens for viewing an LLM's meandering through text. 
 
 What drives the direction isn't quite the same, an exploration algorithm driven by a heuristic is pushed towards a destination, an LLM is pulled towards its end state like gravity (attractors). So the goal selection and what drives the heuristics aren't the same, but the exploration and selections mechanisms line up well.
 
@@ -18,7 +18,7 @@ What drives the direction isn't quite the same, an exploration algorithm driven 
 Let's start with exploration algorithms. The processes and loops that handle exploring a given domain, A*, Dijkstra's algorithm, chess move calculation and graph search, with some parallel concepts in LLM space.
 
 * Starting point: Where are we? Current location, current board state, current node, LLM context.
-* Valid moves: What can we do? Which adjacent squares are open? What moves are valid? What edges can I cross? What are the possible next top-k/top-p tokens?
+* Valid moves: What can we do? Which adjacent squares are open? What moves are valid? What edges can I cross? What are the possible next [top-k/top-p](https://www.geeksforgeeks.org/artificial-intelligence/graph-based-semi-supervised-learning/) tokens?
 * Move selection: Which do we choose? What square is closest to my goal? Which move scores highest? Which tokens/words weigh the most?
 * Apply the move: Perform the action. Move to the square, move to the node, select a word.
 * Loop until you run out of potential options, hit an exit condition, or generate an `EOS` (End of Sequence) token.
@@ -38,13 +38,17 @@ There are a couple of conceptual differences around this:
 * Exploration algorithms select their direction from a heuristic. LLMs derive their direction by projecting context/prompt through the weights. Eg, asking for a story about Bobby's pet would get a pet activity branch, asking for a story about Bobby's toy would get a branch about play time.
 
 ## Depth Vs Breadth First Search
-For graph exploration, we can follow two main search patterns. We can run a depth first algorithm, follow the most obvious path and accept the first result we find. This is cheap, but won't find the best result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find the best result.
-
-A beam search in pathfinding is a middle ground between BFS/DFS that finds a good solution by prioritising searching towards the target, without being exhaustive. This explores a certain depth and breadth based on the most "valuable" moves and how much compute budget we can afford to spend.
+For graph exploration, we can follow two main search patterns. We can run a depth first algorithm, follow the most obvious path and accept the first result we find. This is cheap, but won't find the best result. Breadth first explores each tier of the domain exhaustively, is extremely expensive but will find a better result.
 
 We can compare this exploration spectrum to LLMs Reasoning behaviour:
-* Low reasoning is a shorter, narrower search, quick answer.
-* High reasoning is longer, wider evaluation before generating an answer.
+
+Low reasoning is a shorter, narrower search, quick answer.
+
+"Bobby had a dog. The dog was big. Bobby walked the dog. The end."
+
+High reasoning is longer, wider evaluation before generating an answer.
+
+"Bobby had a dog — which kind? A labrador? A terrier? What's the personality? If it's a terrier, the story is about energy and mischief. If it's a labrador, it's about loyalty and patience. Let's go with a terrier because it creates more narrative tension..."
 
 So if we think of reasoning as the breadth/depth of the exploration, the tradeoff is the same, spend more time/compute in the problem space to produce a better/more accurate answer.
 
@@ -80,7 +84,6 @@ Each of the comment boxes in the above diagram describes a relationship concept 
 
 ![Tensor Matrices](/assets/llms-as-pathfinding-through-text/Tensor_dimensions.svg)
 Credit: Image [from wikipedia](https://en.wikipedia.org/wiki/Tensor_(machine_learning))
-
 
 The supplied context and generated response feed into the tensors and this in turn is used to determine the weight of the next token/word, which is then selected based on the temperature settings and other parameters of LLMs.
 
