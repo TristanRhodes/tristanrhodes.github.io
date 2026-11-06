@@ -56,6 +56,16 @@ If you want to branch out a bit more and get _really_ creative, you can try sett
 
 TODO: Diagram of Average (LLM, Human, Average Distribution, Normal Distribution)
 
+## Averages
+
+One thing I have found is that it is easier for an LLM to identify above average, than it is at creating above average. It can only generate the mean, but it can clearly see things that are above it and highlight where things stand out.
+
+While interrogating the bot on this - it highlighted the distinction between Recognition/Evaluation vs Generation/Creation. 
+
+During evaluation an LLM is rating or critiquing a complete artefact against its internal library to identify why it's good, for generation every step is "Given the previous tokens, what is the most likely next token." These are fundamentally different operations with different 
+
+But it's worth taking with a grain of salt - _It's also trained to flatter you when it thinks you are the author._
+
 ## Homogenisation
 
 TODO:
