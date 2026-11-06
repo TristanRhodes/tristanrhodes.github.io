@@ -40,25 +40,27 @@ and
 
 ![Barnaby the other hungry fish](/assets/random-numbers/barnaby-2.png)
 
+And, it's _not just fish!_.
+
 ## Elias / Elara
 
-And, it's _not just fish!_. We had another hero leaping to the fore in 2026 - `Elias the lighthouse keeper` covered by IBM [here](https://www.ibm.com/think/news/why-every-ai-writes-the-same-story-elias-thorne).
+We had another hero leaping to the fore in 2026 - `Elias the lighthouse keeper` covered by IBM [here](https://www.ibm.com/think/news/why-every-ai-writes-the-same-story-elias-thorne).
 
 ![Elias](/assets/random-numbers/elias.png)
 
-And a shout out to the Side note at the bottom of the IBM [article](https://www.ibm.com/think/news/why-every-ai-writes-the-same-story-elias-thorne), as Elara enters the chat.
+And a shout out to the side note at the bottom of the IBM [article](https://www.ibm.com/think/news/why-every-ai-writes-the-same-story-elias-thorne), as Elara enters the chat.
 
 ![Elara](/assets/random-numbers/elara.png)
 
 ## Selection Mechanics
 
-If you want to branch out a bit more and get _really_ creative, you can try setting the model temperatures to 2, but you get more variance overall, so your story (or code, or data) will end up as a salvador dali-esque fever dream!
+If you want to branch out a bit more and get _really_ creative, you can try setting the model temperatures to 2, but you get more variance overall, so your story (or code, or data) will end up as a reality distorting salvador dali-esque fever dream!
 
-TODO: Diagram of Average (LLM, Human, Average Distribution, Normal Distribution)
+TODO: Diagram of Average (LLM, Human, Normal Distribution, Equal Distribution)
 
 ## Averages
 
-One thing I have found is that it is easier for an LLM to identify above average, than it is at creating above average. It can only generate the mean, but it can clearly see things that are above it and highlight where things stand out.
+One thing I have found is that it is easier for an LLM to identify above average, than it is at creating above average. It can only generate the mean, but it can clearly see things that are above it and highlight where things stand out / deviate in good ways (Just to caveat - I'm not using my own work to test this, I just confirmed Batman vs Superman was worthy of an Oscar).
 
 While interrogating the bot on this - it highlighted the distinction between Recognition/Evaluation vs Generation/Creation. 
 
@@ -68,4 +70,6 @@ But it's worth taking with a grain of salt - _It's also trained to flatter you w
 
 ## Homogenisation
 
-TODO:
+We are all finding ourselves dazzled by the raw power of Claude, and the books, websites, slide decks and systems we can create from it in seconds. But - I do not see what progress we make as a species having a 1000 individuals generate the same 3js animated horse, or identical purple glass websites with swooshing animations.
+
+I don't have an answer to that. But we cannot ideate, create and sell unique products through a lense of homogenisation, and we need to retain and promote creative thought and curate our vision to avoid becoming a bland, uniformaly "purple-glass" nightmare.
