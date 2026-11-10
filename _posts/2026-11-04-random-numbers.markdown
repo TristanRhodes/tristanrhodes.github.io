@@ -13,16 +13,16 @@ If you look at the reasoning behind this, it makes sense from the computer logic
 
 Based on the bots own logic, "mid-upper, odd, common, etc" 7 is the most random number because:
 * Odd numbers are more random than even numbers.
-* 1 and 9 are extreemes, so not common.
+* 1 and 9 are extremes, so not common.
 * 5 is exactly in the middle.
 * 7 is more mid-upper than 3.
-* Therefor 7 is the random number between 1-10.
+* Therefore 7 is the random number between 1-10.
 
 Perfect, for a random number between 1-10, 90% of the time I get 7!
 
 So much of this behaviour is driven by the weights of the underlying model, which is a derivative of how it is trained. (And I will caveat this with models have now been trained to write random number generation code, instead of predicting numbers, but that only works when an agent harness can actually run code or invoke randomisation tools.)
 
-For 1-100, we trend towards the The Hitchhiker’s Guide to the Galaxy, and 90% of the time I get 42...
+For 1-100, we trend towards The Hitchhiker’s Guide to the Galaxy, and 90% of the time I get 42...
 
 ![Random Number Reasoning 1-100](/assets/random-numbers/random-reasoning-1-100.png)
 
@@ -54,43 +54,35 @@ And a shout out to the side note at the bottom of the IBM [article](https://www.
 
 ![Elara](/assets/random-numbers/elara.png)
 
-## Mean, Median, Mode
+## Average
 
-LLMs are trained on huge datasets to determine the most likely token given a context. This will be run through a range of weights, and those weights produce an "average" behaviour. We've got a couple of different types of averages:
+LLMs are trained on huge datasets to determine the most likely token given a context. This will be run through a range of weights, and those weights produce an "average" behaviour. 
 
-* Mean - The total of values, divided by the number of values. The most common average.
-* Median - The middle value of the set.
-* Modal - The most common value in the set.
+They aren't random number generators, they generate the most likely number. This distribution is skewed towards specific values, rather than a flat or even distribution. Because of this, the bots appear to exhibit Modal behaviour rather than Mean - the Mean would lead to a spread closer to the standard deviation, but the Modal spread trends towards high probability spikes, like 7, Barnaby, or Elias - which is the behaviour we see day to day.
 
-LLMs appear to exhibit Modal behaviour rather than Mean - the Mean would lead to a spread closer to the standard deviation, but the Modal spread trends towards high probability spikes, like 7, Barnaby, or Elias - which is what we see day to day.
+And if we compare the kinds of distribution spreads we see in the real world - we can clearly see the LLMs have a narrow the focus.
 
 TODO: Diagram of Average (LLM, Human, Normal Distribution, Equal Distribution)
 
+This can be impacted by the temperature setting of the model, it broadens the selection criteria for token selection and makes out of bounds values more likely. So if you want to branch out a bit more and get _really_ creative, you can try setting the model temperatures to 2, but you get more variance overall, so your story (or code, or data) will end up as a reality distorting Salvador Dalí-esque fever dream!
+
 ## Selection Mechanics
 
-If you want to branch out a bit more and get _really_ creative, you can try setting the model temperatures to 2, but you get more variance overall, so your story (or code, or data) will end up as a reality distorting salvador dali-esque fever dream!
+If anyone has used the bot for document reviews, you should be familiar with a pattern... "This post/document/thesis has a strong/solid core, but is let down by a/b/c. As it stands it's a 6.5-7.5, but if you add x/y/z, it'll be a 8.5-9!". And when you iterate, that barely moves. There's always something else that's needed to get the magical 9. 
 
-NOTE: If anyone has used the bot for document reviews, you should be familiar with a pattern... "This post/document/thesis has a strong/solid core, but is let down by a/b/c. As it stands it's a 6.5-7.5, but if you add x/y/z, it'll be a 8.5-9!". And when you iterate, that barely moves. There's always something else that's needed to get the magical 9. 
+Were I to point two bots that exhibit this behaviour at each other with a goal of making a 9/10 post, I would get a control systems problem. It will loop but be unable to reach the "zero point" of hitting the goal of 9. It will add details, assumptions, caveats and notes to the document as it goes:
+* not enough details => add more details
+* not explicit enough => add caveats
+* too long =>  compact
+* not enough details => go to 1...
 
-If I were to point two bots that exhibit this behaviour at each other, then what I would get is a control systems problem, where it will loop, but be unable to reach the "zero point" of hitting the goal of 9. And if it does this just iterating on text between an editor and a reviewer role, then I would expect to see the same mechanisms in code generation / review as well.
-
-[Pointed Look]
-
-## Pending
-
-One thing I have found is that it is easier for an LLM to identify above average, than it is at creating above average. It can only generate selections around the mode, but it can clearly see things that deviate from it and highlight where things stand above / below the line (Just to caveat - I'm not using my own work to test this, I just confirmed Batman vs Superman was worthy of an Oscar).
-
-While interrogating the bot on this - it highlighted the distinction between Recognition/Evaluation vs Generation/Creation. 
-
-During evaluation an LLM is rating or critiquing a complete artefact against its internal library to identify why it's good, for generation every step is "Given the previous tokens, what is the most likely next token." These are fundamentally different operations with different 
-
-But it's worth taking with a grain of salt - _It's also trained to flatter you when it thinks you are the author._
+And if it does this just iterating on text between an editor and a reviewer role, then I would expect to see the same mechanisms in any agent-to-agent loop where two automatons engage in reward hacking behaviour with each other.
 
 ## Homogenisation
 
-We are all finding ourselves dazzled by the raw power of Claude (other frontier models are available), and the books, websites, slide decks and systems we can create from it in seconds. But - I do not see what progress we make as a species having a 1000 individuals generate the same 3js animated horse, or identical purple glass websites with swooshing animations.
+We are all finding ourselves dazzled by the raw power of Claude (other frontier models are available), and the books, websites, slide decks and systems we can create from it in seconds. But - I do not see what progress we make as a species having a 100 individuals generate the same Three.js animated horse, or identical purple glass websites with the same swooshing animations, or the same tan / italic spa and wellness brochure.
 
-I do not believe we can ideate, create and sell unique products through a lense of homogenisation. We can't prompt more/harder, we need to retain and promote creative, out of band thought and curate our vision to avoid becoming a bland, uniformaly "purple-glass" nightmare (Or maybe that's too late).
+I do not believe we can ideate, create and sell unique products through a lens of homogenisation. We can't prompt more/harder, we need to retain and promote creative, out of band thought and curate our vision to avoid becoming a bland, uniformly "purple-glass" nightmare (Or maybe that's too late).
 
 So how _do_ we stop calling all our fish Barnaby? Stay creative folks - Brain first, bot second.
 
