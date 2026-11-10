@@ -80,7 +80,7 @@ And if it does this just iterating on text between an editor and a reviewer role
 
 ## Homogenisation
 
-We are all finding ourselves dazzled by the raw power of Claude (other frontier models are available), and the books, websites, slide decks and systems we can create from it in seconds. But - I also see 100's of individuals finding their own uniqueness by generate the same Three.js animated horse, the same tan / italic spa and wellness brochure, or identical purple glass websites with the same swooshing animations.
+We are all finding ourselves dazzled by the raw power of Claude (other frontier models are available), and the books, websites, slide decks and systems we can create from it in seconds. But - I also see 100's of individuals finding their own uniqueness by generating the same Three.js animated horse, the same tan / italic spa and wellness brochure, or identical purple glass websites with the same swooshing animations.
 
 I do not believe we can ideate, create and sell unique products through a lens of homogenisation. We can't prompt more/harder, we need to retain and promote creative, out-the-box thought and curate our vision to avoid becoming a bland, uniformly "purple-glass" nightmare (Or maybe that's too late).
 
